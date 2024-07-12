@@ -88,7 +88,7 @@ function checkNewTicket(columns) {
 					
 					browser.storage.local.set({ 'tickets': tickets }).then(setItem, onError);
 					
-					if (minute === 00 || minute === 20 || minute === 40) {
+					if (minute === 00 || minute === 30) {
 						
 						let ticketsCount = document.getElementById('Dashboard0130-TicketOpenAll').innerText.split('(')[1].split(')')[0]; 
 
@@ -99,7 +99,7 @@ function checkNewTicket(columns) {
 					
 							
 				} else {
-					if (minute === 00 || minute === 20 || minute === 40) {
+					if (minute === 00 || minute === 30) {
 						sendMessage(
 							'<tg-emoji emoji-id="5368324170671202286">😎</tg-emoji>' + ' На даний момент необроблених заявок немає'
 							);
