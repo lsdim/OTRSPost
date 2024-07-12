@@ -59,8 +59,9 @@ function checkNewTicket(columns) {
 			 
 			 console.log('tickets', tickets);
 			 
-			 let now = new Date();
-			 let minute = now.getMinutes();
+			 const now = new Date();
+			 const minute = now.getMinutes();
+			 const hours  = now.getHours()
 			 
 			 if (rows) {
 				if (rows.length>0) {
@@ -88,22 +89,33 @@ function checkNewTicket(columns) {
 					
 					browser.storage.local.set({ 'tickets': tickets }).then(setItem, onError);
 					
-					if (minute === 00 || minute === 30) {
+					if (hours >= 8 && hours < 21) {
 						
-						let ticketsCount = document.getElementById('Dashboard0130-TicketOpenAll').innerText.split('(')[1].split(')')[0]; 
+						if (minute === 05) {
+						
+						//let ticketsCount = document.getElementById('Dashboard0130-TicketOpenAll').innerText.split('(')[1].split(')')[0]; 
 
+						//sendMessage(
+						//	'<tg-emoji emoji-id="5368324170671202286">📯</tg-emoji>' + ` Зараз є ${+ticketsCount} ${getKindTicket(ticketsCount)} `
+						//	);
+						
 						sendMessage(
-							'<tg-emoji emoji-id="5368324170671202286">📯</tg-emoji>' + ` Зараз є ${+ticketsCount} ${getKindTicket(ticketsCount)} `
+							'<tg-emoji emoji-id="5368324170671202286">😎</tg-emoji>' + ' Просто нагадую, що я працюю'
 							);
 					}
+					}
+					
 					
 							
 				} else {
-					if (minute === 00 || minute === 30) {
-						sendMessage(
-							'<tg-emoji emoji-id="5368324170671202286">😎</tg-emoji>' + ' На даний момент необроблених заявок немає'
-							);
+					if (hours >= 8 && hours < 21) {
+						if (minute === 00 || minute === 30) {
+							sendMessage(
+								'<tg-emoji emoji-id="5368324170671202286">😎</tg-emoji>' + ' На даний момент необроблених заявок немає'
+								);
+						}
 					}
+					
 				} 
 			}
 
