@@ -1,0 +1,23 @@
+{
+  "manifest_version": 2,
+  "name": "OTRSPost",
+  "version": "1.0",
+
+  "description": "Send new tickets to telegram",
+
+  "icons": {
+    "48": "icons/otrs-48.png"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["*://*.help.ukrposhta.loc/otrs/index.pl?Action=AgentDashboard*"],
+      "js": ["OTRSPost.js"]
+    }
+  ],
+  
+  "permissions": [
+    "storage",
+    "*://api.telegram.org/*"
+  ]
+}
