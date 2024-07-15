@@ -17,7 +17,7 @@ const intervalID = setInterval(checkNewTicket, 60000, columns);
 
 function checkNewTicket(columns) {
 	
-	if (checkLogin) {
+	if (checkLogin()) {
 		sendMessage(getAnswerLogin());
 		return;
 	}
@@ -160,6 +160,7 @@ async function getTickets() {
 
 function checkLogin() {
 	const loginBox = document.getElementById('LoginBox');
+	console.log('loginBox',loginBox);
 	if (loginBox) {
 		return true
 	} else {
