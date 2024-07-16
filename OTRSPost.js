@@ -1,9 +1,9 @@
 
 const dev_chat = '-4228417669';
-const prod_cahat = '-4267367123';
+const prod_chat = '-4267367123';
 
 const BOT_TOKEN = '7255647619:AAH0dKnIaCsFRx7Dg2qyezOWuum4ItZBkec';
-const CHAT_ID = dev_chat;
+const CHAT_ID = prod_chat;
 
 
 
@@ -18,7 +18,11 @@ const intervalID = setInterval(checkNewTicket, 60000, columns);
 function checkNewTicket(columns) {
 	
 	if (checkLogin()) {
-		sendMessage(getAnswerLogin());
+		if (hours >= 8 && hours < 21) {						
+			if (minute === 05 || minute === 20 || minute === 35 || minute === 50) {
+				sendMessage(getAnswerLogin());
+			}
+		}
 		return;
 	}
 	
@@ -122,7 +126,7 @@ function checkNewTicket(columns) {
 							
 				} else {
 					if (hours >= 8 && hours < 21) {
-						if (minute === 00 || minute === 30) {
+						if (minute === 05) {
 							sendMessage(
 								'<tg-emoji emoji-id="5368324170671202286">😎</tg-emoji>' + ' На даний момент необроблених заявок немає'
 								);
