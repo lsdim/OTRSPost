@@ -3,7 +3,7 @@ const dev_chat = '-4228417669';
 const prod_chat = '-4267367123';
 
 const BOT_TOKEN = '7255647619:AAH0dKnIaCsFRx7Dg2qyezOWuum4ItZBkec';
-const CHAT_ID = prod_chat;
+const CHAT_ID = dev_chat;
 
 
 
@@ -16,6 +16,10 @@ const intervalID = setInterval(checkNewTicket, 60000, columns);
 
 
 function checkNewTicket(columns) {
+	
+	const now = new Date();
+	const minute = now.getMinutes();
+	const hours  = now.getHours()
 	
 	if (checkLogin()) {
 		if (hours >= 8 && hours < 21) {						
@@ -73,11 +77,8 @@ function checkNewTicket(columns) {
 			 
 			 tck.tickets ? tickets = [...tck.tickets] : console.log('tck',tck);
 			 
-			 console.log('tickets', tickets);
+			 console.log('tickets', tickets);		 
 			 
-			 const now = new Date();
-			 const minute = now.getMinutes();
-			 const hours  = now.getHours()
 			 
 			 if (rows) {
 				if (rows.length>0) {
