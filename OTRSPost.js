@@ -87,7 +87,12 @@ function checkNewTicket(columns) {
 							tickets.push(getInnerText(rows[i],ticketNumId));
 							console.log('tickets - ' + i, tickets);
 							
-							sendMessage(
+							
+							const ticketURL = getTicketURL(rows[i], ticketNumId);
+							
+							const tcktText = getTicketText(ticketURL);
+							
+						/*	sendMessage(
 							'<tg-emoji emoji-id="5368324170671202286">🚨</tg-emoji>' +columns[ticketNumId] 
 							+ '<tg-emoji emoji-id="5368324170671202286">🚨</tg-emoji>' + '\t\n<b>' + getInnerText(rows[i],ticketNumId) + '</b>\t\n\n'  
 							+ columns[createdId] + '\t\n<b>' + getInnerText(rows[i],createdId) + ' (' + getInnerText(rows[i],ageId) + ')</b>\t\n\n' 
@@ -99,7 +104,9 @@ function checkNewTicket(columns) {
 							+ columns[ownerId] + '\t\n<b>' + getInnerText(rows[i],ownerId) + '</b>\t\n\n' 
 							 
 							
-							);					
+							);		
+
+						*/							
 							
 						}
 					}
@@ -162,6 +169,63 @@ async function getTickets() {
   console.log('storageData', storageData);  // stored object, not a promise anymore!
   return storageData;
 }*/
+
+function getTicketText(url) {
+	
+	
+	fetch(url).then(function (response) {
+		if (response.ok) {
+			return response.text();
+		}
+		throw response;
+	}).then(function (text) {
+		const html = stringToHTML(text);
+		const content = html.getElementsByClassName('No');		
+		const articleID = content[content.length-1].children[1].value;
+		
+		//***************
+		fetch(url+`#${articleID}`).then(function (response) {
+			if (response.ok) {
+				return response.text();
+			}
+			throw response;
+		}).then(function (text) {
+			const articleBodyHtml = stringToHTML(text);
+			const articleBody = articleBodyHtml.getElementsByClassName('ArticleBody');
+
+			if (articleBody.length > 0) {
+				console.log('ArticleBody', articleBody);
+				const mess = articleBody[0].innerText.split('********************************************************************************')[0].split('***')[0].trim();
+				console.log('mess', mess);
+				
+				sendMessage(mess)			
+			} else {
+				//const articleBody = articleBodyHtml.getElementsByClassName('ArticleBody');
+			}
+			
+			
+			
+			
+			
+		})
+		.catch(error => {
+			console.error('Error getting ticket text:', error);
+		});
+		//***************
+		
+	})
+	.catch(error => {
+        console.error('Error getting ticket text:', error);
+    });
+
+}
+
+function stringToHTML (text) {
+	let parser = new DOMParser();
+	let doc = parser.parseFromString(text, 'text/html');
+	return doc.body;
+}
+
 
 function checkLogin() {
 	const loginBox = document.getElementById('LoginBox');
@@ -246,6 +310,10 @@ function getInnerText(row, id) {
 	return row.children[id].innerText
 }
 
+function getTicketURL(row, id) {
+	return row.children[id].children[0].href
+}
+
 function setItem() {
   console.log("OK");
 }
@@ -311,6 +379,49 @@ function sendMessage(message) {
 	}
     
 }*/
+
+
+//******************************************************************
+
+
+// This function returns promise after 2 seconds
+let first_function = function () {
+    console.log("Entered first function");
+    return new Promise(resolve => {
+        setTimeout(function () {
+            resolve("\t\t This is first promise");
+            console.log("Returned first promise");
+        }, 4000);
+    });
+};
+ 
+// This function executes returns promise after 4 seconds
+let second_function = function () {
+    console.log("Entered second function");
+    return new Promise(resolve => {
+        setTimeout(function () {
+            resolve("\t\t This is second promise");
+            console.log("Returned second promise");
+        }, 2000);
+    });
+};
+ 
+let async_function = async function () {
+    console.log('async function called');
+ 
+    const first_promise = await first_function();
+    console.log("After awaiting for 2 seconds," +
+        "the promise returned from first function is:");
+    console.log(first_promise);
+ 
+    const second_promise = await second_function();
+    console.log("After awaiting for 4 seconds, the" +
+        "promise returned from second function is:");
+    console.log(second_promise);
+}
+ 
+async_function();
+
 
 
 
