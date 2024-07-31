@@ -1,5 +1,3 @@
-//import { answersLogin, answersOnline } from './answers.js';
-
 
 const dev_chat = '-4228417669';
 const prod_chat = '-4267367123';
@@ -16,7 +14,7 @@ let columns = getColumns();
 
 //checkNewTicket(columns);
 
-const intervalID = setInterval(checkNewTicket, 30000, columns);
+const intervalID = setInterval(checkNewTicket, 60000, columns);
 //checkNewTicket(columns);
 
 
@@ -215,6 +213,7 @@ async function checkNewTicket(columns) {
             const ticketNumber = getInnerText(rows[i], ticketNumId);
             const ticketState = getInnerText(rows[i], stateId);
             if (!tickets.includes(ticketNumber) && ticketState === 'Призначена') {
+			//if (!tickets.includes(ticketNumber)) {
                 tickets.push(ticketNumber);
                 const ticketURL = getTicketURL(rows[i], ticketNumId);
                 const ticketText = await getTicketText(ticketURL); // Асинхронний виклик
@@ -254,7 +253,7 @@ async function checkNewTicket(columns) {
             console.error('Error setting tickets to storage:', error);
         }
 
-        if (hours >= 8 && hours < 21 && minute === 58) {
+        if (hours >= 8 && hours < 21 && minute === 05) {
             sendMessage(getAnswer(answersOnline));
         }
     } else {
@@ -308,22 +307,22 @@ function getArticleID(text) {
 function getArticleText(text) {
     const articleBodyHtml = stringToHTML(text);
     const articleBody = articleBodyHtml.getElementsByClassName('ArticleBody');
-	const divtagdefaultwrapper = articleBodyHtml.getElementsByTagName('body');
+	const messageBrowser = articleBodyHtml.getElementsByClassName('MessageBrowser');
 	
-	console.log('articleBody', articleBodyHtml);
+	//console.log('articleBody', articleBodyHtml);
 
     if (articleBody.length > 0) {
         console.log('ArticleBody', articleBody);
         const mess = articleBody[0].innerText.split('********************************************************************************')[0].split('***')[0].trim();
-        console.log('mess', mess);
+        //console.log('mess', mess);
         return mess;			
-    } else if (divtagdefaultwrapper) {
+    } else if (messageBrowser.length > 0) {
 		//const articleBody = articleBodyHtml.getElementById('divtagdefaultwrapper');
-		console.log('divtagdefaultwrapper', articleBody);        
-        return articleBody;
+		//console.log('divtagdefaultwrapper', articleBody);        
+        return 'Щоб побачити текст, відкрийте заявку 😅';
     } else {
 		console.error('ArticleBody not found');
-		return '';
+		return 'Щоб побачити текст, відкрийте заявку 😅';
 	}
 }
 
