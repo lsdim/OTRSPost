@@ -12,7 +12,7 @@
   "content_scripts": [
     {
       "matches": ["*://*.help.ukrposhta.loc/otrs/index.pl?Action=AgentDashboard*"],
-      "js": ["OTRSPost.js"]
+      "js": ["OTRSPost.js", "answers.js"]
     }
   ],
   
