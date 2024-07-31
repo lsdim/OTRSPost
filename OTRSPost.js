@@ -11,11 +11,14 @@ document.body.style.border = "2px solid red";
 let columns = getColumns();
 
 
-const intervalID = setInterval(checkNewTicket, 60000, columns);
+
+//checkNewTicket(columns);
+
+const intervalID = setInterval(checkNewTicket, 30000, columns);
 //checkNewTicket(columns);
 
 
-function checkNewTicket(columns) {
+/*async function checkNewTicket(columns) {
 	
 	const now = new Date();
 	const minute = now.getMinutes();
@@ -48,6 +51,8 @@ function checkNewTicket(columns) {
 	9: "Тег заявки"​
 	10: "Черга"
 	*/
+	
+/*	
 	const ticketNumId = columns.findIndex(el => el === 'TicketNumber');
 	const createdId = columns.findIndex(el => el === 'Створено');
 	const ageId = columns.findIndex(el => el === 'Відкрита');
@@ -69,7 +74,7 @@ function checkNewTicket(columns) {
 	let tickets = [];
 	tmp.tickets ? tickets = [...tmp.tickets] : console.log('tmp',tmp);
 	*/
-
+/*
 	let tickets = [];
 
 		let gettingItem = browser.storage.local.get('tickets');
@@ -90,7 +95,9 @@ function checkNewTicket(columns) {
 							
 							const ticketURL = getTicketURL(rows[i], ticketNumId);
 							
-							const tcktText = getTicketText(ticketURL);
+							getArticleID(ticketURL);
+								
+							console.log('tcktText end');
 							
 						/*	sendMessage(
 							'<tg-emoji emoji-id="5368324170671202286">🚨</tg-emoji>' +columns[ticketNumId] 
@@ -107,7 +114,7 @@ function checkNewTicket(columns) {
 							);		
 
 						*/							
-							
+/*							
 						}
 					}
 					
@@ -127,7 +134,7 @@ function checkNewTicket(columns) {
 							'<tg-emoji emoji-id="5368324170671202286">😎</tg-emoji>' + ' Просто нагадую, що я працюю'
 							);
 							*/
-					}
+/*					}
 					} 
 					
 					
@@ -147,78 +154,179 @@ function checkNewTicket(columns) {
 		}, onError);
 }
 
-	
-
-
-
-
-/*function getTickets() {
-	
-	let tickets = [];
-	browser.storage.local.get('tickets').then(onGot, onError);
-
-	let gettingItem = browser.storage.local.get('tickets');
-	 gettingItem.then(tck => { tck.tickets ? tickets = [...tck.tickets] : console.log('tck',tck)}, onError);
-	console.log('tickets', tickets);
-	return tickets;
-}
 */
-/*
-async function getTickets() {
-  const storageData = await browser.storage.local.get('tickets');
-  console.log('storageData', storageData);  // stored object, not a promise anymore!
-  return storageData;
-}*/
 
-function getTicketText(url) {
-	
-	
-	fetch(url).then(function (response) {
-		if (response.ok) {
-			return response.text();
-		}
-		throw response;
-	}).then(function (text) {
-		const html = stringToHTML(text);
-		const content = html.getElementsByClassName('No');		
-		const articleID = content[content.length-1].children[1].value;
-		
-		//***************
-		fetch(url+`#${articleID}`).then(function (response) {
-			if (response.ok) {
-				return response.text();
-			}
-			throw response;
-		}).then(function (text) {
-			const articleBodyHtml = stringToHTML(text);
-			const articleBody = articleBodyHtml.getElementsByClassName('ArticleBody');
 
-			if (articleBody.length > 0) {
-				console.log('ArticleBody', articleBody);
-				const mess = articleBody[0].innerText.split('********************************************************************************')[0].split('***')[0].trim();
-				console.log('mess', mess);
+
+//**************************************
+async function checkNewTicket(columns) {
+    const now = new Date();
+    const minute = now.getMinutes();
+    const hours = now.getHours();
+
+    if (checkLogin()) {
+        if (hours >= 8 && hours < 21) {						
+            if ([5, 20, 35, 50].includes(minute)) {
+                sendMessage(getAnswerLogin());
+            }
+        }
+        return;
+    }
+
+    const rows = document.getElementsByClassName("MasterAction");
+	
+	/*
+	0: "Пріоритет"​
+	1: "Нове повідомлення"​
+	2: "TicketNumber"​
+	3: "Створено"​
+	4: "Відкрита"​
+	5: "Заголовок"​
+	6: "Стан"​
+	7: "Власник"​
+	8: "Ім'я клієнта"​
+	9: "Тег заявки"​
+	10: "Черга"
+	*/
+
+    const ticketNumId = columns.findIndex(el => el === 'TicketNumber');
+    const createdId = columns.findIndex(el => el === 'Створено');
+    const ageId = columns.findIndex(el => el === 'Відкрита');
+    const titleId = columns.findIndex(el => el === 'Заголовок');
+    const stateId = columns.findIndex(el => el === 'Стан');
+    const ownerId = columns.findIndex(el => el === 'Власник');
+    const customerNameId = columns.findIndex(el => el === "Ім'я клієнта");
+    const ticketTagId = columns.findIndex(el => el === 'Тег заявки');
+    const queueId = columns.findIndex(el => el === 'Черга');
+
+    let tickets = [];
+
+    try {
+        const gettingItem = await browser.storage.local.get('tickets');
+        tickets = gettingItem.tickets ? [...gettingItem.tickets] : [];
+    } catch (error) {
+        console.error('Error getting tickets from storage:', error);
+    }
+
+    if (rows.length > 0) {
+        for (let i = 0; i < rows.length; i++) {
+            const ticketNumber = getInnerText(rows[i], ticketNumId);
+            const ticketState = getInnerText(rows[i], stateId);
+            if (!tickets.includes(ticketNumber) && ticketState === 'Призначена') {
+                tickets.push(ticketNumber);
+                const ticketURL = getTicketURL(rows[i], ticketNumId);
+                const ticketText = await getTicketText(ticketURL); // Асинхронний виклик
+
+              /*  sendMessage(
+                    `<tg-emoji emoji-id="5368324170671202286">🚨</tg-emoji>${columns[ticketNumId]}<tg-emoji emoji-id="5368324170671202286">🚨</tg-emoji>
+                    \t\n<b>${getInnerText(rows[i], ticketNumId)}</b>\t\n\n${columns[createdId]}
+                    \t\n<b>${getInnerText(rows[i], createdId)} (${getInnerText(rows[i], ageId)})</b>\t\n\n${columns[ticketTagId]}
+                    \t\n<b>${getInnerText(rows[i], ticketTagId)}</b>\t\n\n${columns[titleId]}
+                    \t\n<b>${getInnerText(rows[i], titleId)}</b>\t\n\n${columns[customerNameId]} <tg-emoji emoji-id="5368324170671202286">😭</tg-emoji>
+                    \t\n<b>${getInnerText(rows[i], customerNameId)}</b>\t\n\n${columns[stateId]}
+                    \t\n<b>${getInnerText(rows[i], stateId)}</b>\t\n\n${columns[ownerId]}
+                    \t\n<b>${getInnerText(rows[i], ownerId)}</b>\t\n\n${ticketText}`
+                );
+				*/
 				
-				sendMessage(mess)			
-			} else {
-				//const articleBody = articleBodyHtml.getElementsByClassName('ArticleBody');
-			}
-			
-			
-			
-			
-			
-		})
-		.catch(error => {
-			console.error('Error getting ticket text:', error);
-		});
-		//***************
-		
-	})
-	.catch(error => {
-        console.error('Error getting ticket text:', error);
-    });
+				sendMessage(
+							'<tg-emoji emoji-id="5368324170671202286">🚨</tg-emoji>' +columns[ticketNumId] 
+							+ '<tg-emoji emoji-id="5368324170671202286">🚨</tg-emoji>' + '\t\n<b>' + getInnerText(rows[i],ticketNumId) + '</b>\t\n\n'  
+							+ columns[createdId] + '\t\n<b>' + getInnerText(rows[i],createdId) + ' (' + getInnerText(rows[i],ageId) + ')</b>\t\n\n' 
+							+ columns[ticketTagId] + '\t\n<b>' + getInnerText(rows[i],ticketTagId) + '</b>\t\n\n'
+							+ columns[titleId] + '\t\n<b>' + getInnerText(rows[i],titleId) + '</b>\t\n\n' 
+							+ columns[customerNameId] + ' <tg-emoji emoji-id="5368324170671202286">😭</tg-emoji>' 
+							+ '\t\n<b>' + getInnerText(rows[i],customerNameId) + '</b>\t\n\n'
+							+ 'Текст заявки: \t\n<b>' + ticketText + '</b>\t\n\n'
+							//+ columns[stateId] + '\t\n<b>' + getInnerText(rows[i],stateId) + '</b>\t\n\n' 
+							//+ columns[ownerId] + '\t\n<b>' + getInnerText(rows[i],ownerId) + '</b>\t\n\n' 
+							 
+							
+							);
+            }
+        }
 
+        try {
+            await browser.storage.local.set({ 'tickets': tickets });
+        } catch (error) {
+            console.error('Error setting tickets to storage:', error);
+        }
+
+        if (hours >= 8 && hours < 21 && minute === 5) {
+            sendMessage(getAnswerOnline());
+        }
+    } else {
+        if (hours >= 8 && hours < 21 && minute === 5) {
+            sendMessage('<tg-emoji emoji-id="5368324170671202286">😎</tg-emoji> На даний момент необроблених заявок немає');
+        }
+    }
 }
+
+async function getTicketText(url) {	
+    try {
+        const responseID = await fetch(url);
+        if (!responseID.ok) {
+            throw new Error('Network response was not ok for the first fetch');
+        }
+
+        const htmlID = await responseID.text();
+        const articleID = getArticleID(htmlID);
+		
+		console.log('articleID', articleID);
+
+        if (!articleID) {
+            throw new Error('Article ID not found');
+        }
+
+		console.log(`${url}#${articleID}`);
+        const response2 = await fetch(`http://help.ukrposhta.loc${articleID}`);
+        if (!response2.ok) {
+            throw new Error('Network response was not ok for the second fetch');
+        }
+
+        const html2 = await response2.text();
+        return getArticleText(html2);
+    } catch (error) {
+        console.error('There has been a problem with your fetch operation:', error);
+    }
+}
+
+function getArticleID(text) {
+    const html = stringToHTML(text);
+    const content = html.getElementsByClassName('No');		
+    if (content.length === 0) {
+        console.error('Article ID not found in content');
+        return null;
+    }
+	
+	console.log('no', content, content[content.length-1].children[0].value);
+    return content[content.length-1].children[0].value;
+}
+
+function getArticleText(text) {
+    const articleBodyHtml = stringToHTML(text);
+    const articleBody = articleBodyHtml.getElementsByClassName('ArticleBody');
+	const divtagdefaultwrapper = articleBodyHtml.getElementsByTagName('body');
+	
+	console.log('articleBody', articleBodyHtml);
+
+    if (articleBody.length > 0) {
+        console.log('ArticleBody', articleBody);
+        const mess = articleBody[0].innerText.split('********************************************************************************')[0].split('***')[0].trim();
+        console.log('mess', mess);
+        return mess;			
+    } else if (divtagdefaultwrapper) {
+		//const articleBody = articleBodyHtml.getElementById('divtagdefaultwrapper');
+		console.log('divtagdefaultwrapper', articleBody);        
+        return articleBody;
+    } else {
+		console.error('ArticleBody not found');
+		return '';
+	}
+}
+
+//**************************************	
+
 
 function stringToHTML (text) {
 	let parser = new DOMParser();
@@ -381,46 +489,10 @@ function sendMessage(message) {
 }*/
 
 
-//******************************************************************
 
 
-// This function returns promise after 2 seconds
-let first_function = function () {
-    console.log("Entered first function");
-    return new Promise(resolve => {
-        setTimeout(function () {
-            resolve("\t\t This is first promise");
-            console.log("Returned first promise");
-        }, 4000);
-    });
-};
- 
-// This function executes returns promise after 4 seconds
-let second_function = function () {
-    console.log("Entered second function");
-    return new Promise(resolve => {
-        setTimeout(function () {
-            resolve("\t\t This is second promise");
-            console.log("Returned second promise");
-        }, 2000);
-    });
-};
- 
-let async_function = async function () {
-    console.log('async function called');
- 
-    const first_promise = await first_function();
-    console.log("After awaiting for 2 seconds," +
-        "the promise returned from first function is:");
-    console.log(first_promise);
- 
-    const second_promise = await second_function();
-    console.log("After awaiting for 4 seconds, the" +
-        "promise returned from second function is:");
-    console.log(second_promise);
-}
- 
-async_function();
+
+
 
 
 
