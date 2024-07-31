@@ -169,7 +169,7 @@ async function checkNewTicket(columns) {
     if (checkLogin()) {
         if (hours >= 8 && hours < 21) {						
             if ([5, 20, 35, 50].includes(minute)) {
-                sendMessage(getAnswerLogin());
+                sendMessage(getAnswer(answersLogin));
             }
         }
         return;
@@ -254,8 +254,8 @@ async function checkNewTicket(columns) {
             console.error('Error setting tickets to storage:', error);
         }
 
-        if (hours >= 8 && hours < 21 && minute === 47) {
-            sendMessage(getAnswerOnline());
+        if (hours >= 8 && hours < 21 && minute === 58) {
+            sendMessage(getAnswer(answersOnline));
         }
     } else {
         if (hours >= 8 && hours < 21 && minute === 5) {
@@ -347,17 +347,17 @@ function checkLogin() {
 	} 
 }
 
-function getAnswerLogin() {	
-	const id = Math.floor(Math.random() * ((answersLogin.length - 1) - 0 + 1)) + 0;
+function getAnswer(answers) {	
+	const id = Math.floor(Math.random() * ((answers.length - 1) - 0 + 1)) + 0;
 	console.log('id',id);
-	return answersLogin[id];
+	return answers[id];
 }
 
-function getAnswerOnline() {	
+/*function getAnswerOnline() {	
 	const id = Math.floor(Math.random() * ((answersOnline.length - 1) - 0 + 1)) + 0;
 	console.log('id',id);
 	return answersOnline[id];
-}
+}*/
 
 function getKindTicket(count) {
 	switch (count.substr(count.length - 1)) {
@@ -390,17 +390,17 @@ function getTicketURL(row, id) {
 	return row.children[id].children[0].href
 }
 
-function setItem() {
+/*function setItem() {
   console.log("OK");
-}
+}*/
 
-function onError(error) {
+/*function onError(error) {
   console.log(error);
-}
+}*/
 
-function onGot(item) {
+/*function onGot(item) {
 	console.log('onGot', item);
-}
+}*/
 
 function sendMessage(message) {
     const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
