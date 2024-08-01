@@ -231,14 +231,14 @@ async function checkNewTicket(columns) {
 				*/
 				
 				sendMessage(
-							'<tg-emoji emoji-id="5368324170671202286">🚨</tg-emoji>' +columns[ticketNumId] 
-							+ '<tg-emoji emoji-id="5368324170671202286">🚨</tg-emoji>' + '\t\n<b>' + getInnerText(rows[i],ticketNumId) + '</b>\t\n\n'  
+							'🚨' +columns[ticketNumId] + '🚨' + '\t\n' 
+							+ `<a href="${ticketURL}">`+ getInnerText(rows[i],ticketNumId) + '</a>\t\n\n'  
 							+ columns[createdId] + '\t\n<b>' + getInnerText(rows[i],createdId) + ' (' + getInnerText(rows[i],ageId) + ')</b>\t\n\n' 
 							+ columns[ticketTagId] + '\t\n<b>' + getInnerText(rows[i],ticketTagId) + '</b>\t\n\n'
 							+ columns[titleId] + '\t\n<b>' + getInnerText(rows[i],titleId) + '</b>\t\n\n' 
 							+ columns[customerNameId] + ' <tg-emoji emoji-id="5368324170671202286">😭</tg-emoji>' 
 							+ '\t\n<b>' + getInnerText(rows[i],customerNameId) + '</b>\t\n\n'
-							+ 'Текст заявки: \t\n<b>' + ticketText + '</b>\t\n\n'
+							+ ticketText 
 							//+ columns[stateId] + '\t\n<b>' + getInnerText(rows[i],stateId) + '</b>\t\n\n' 
 							//+ columns[ownerId] + '\t\n<b>' + getInnerText(rows[i],ownerId) + '</b>\t\n\n' 
 							 
@@ -273,13 +273,13 @@ async function getTicketText(url) {
         const htmlID = await responseID.text();
         const articleID = getArticleID(htmlID);
 		
-		console.log('articleID', articleID);
+		//console.log('articleID', articleID);
 
         if (!articleID) {
             throw new Error('Article ID not found');
         }
 
-		console.log(`${url}#${articleID}`);
+		//console.log(`${url}#${articleID}`);
         const response2 = await fetch(`http://help.ukrposhta.loc${articleID}`);
         if (!response2.ok) {
             throw new Error('Network response was not ok for the second fetch');
@@ -300,7 +300,7 @@ function getArticleID(text) {
         return null;
     }
 	
-	console.log('no', content, content[content.length-1].children[0].value);
+	//console.log('no', content, content[content.length-1].children[0].value);
     return content[content.length-1].children[0].value;
 }
 
@@ -312,8 +312,11 @@ function getArticleText(text) {
 	//console.log('articleBody', articleBodyHtml);
 
     if (articleBody.length > 0) {
-        console.log('ArticleBody', articleBody);
-        const mess = articleBody[0].innerText.split('********************************************************************************')[0].split('***')[0].trim();
+       // console.log('ArticleBody', articleBody);
+		const textMessage = articleBody[0].innerText.split('********************************************************************************')[0]
+							.split('***'); 
+        const mess = 'Текст заявки: \t\n<b>' + textMessage[0].trim() + '</b>\t\n'
+							+ '*** \t\n📧<b>' + textMessage[1].split('\n')[1].trim() + '</b>';
         //console.log('mess', mess);
         return mess;			
     } else if (messageBrowser.length > 0) {
