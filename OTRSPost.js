@@ -236,8 +236,7 @@ async function checkNewTicket(columns) {
 							+ columns[createdId] + '\t\n<b>' + getInnerText(rows[i],createdId) + ' (' + getInnerText(rows[i],ageId) + ')</b>\t\n\n' 
 							+ columns[ticketTagId] + '\t\n<b>' + getInnerText(rows[i],ticketTagId) + '</b>\t\n\n'
 							+ columns[titleId] + '\t\n<b>' + getInnerText(rows[i],titleId) + '</b>\t\n\n' 
-							+ columns[customerNameId] + ' <tg-emoji emoji-id="5368324170671202286">😭</tg-emoji>' 
-							+ '\t\n<b>' + getInnerText(rows[i],customerNameId) + '</b>\t\n\n'
+							+ columns[customerNameId] + ' 😭' + '\t\n<b>' + getInnerText(rows[i],customerNameId) + '</b>\t\n\n'
 							+ ticketText 
 							//+ columns[stateId] + '\t\n<b>' + getInnerText(rows[i],stateId) + '</b>\t\n\n' 
 							//+ columns[ownerId] + '\t\n<b>' + getInnerText(rows[i],ownerId) + '</b>\t\n\n' 
@@ -322,10 +321,10 @@ function getArticleText(text) {
     } else if (messageBrowser.length > 0) {
 		//const articleBody = articleBodyHtml.getElementById('divtagdefaultwrapper');
 		//console.log('divtagdefaultwrapper', articleBody);        
-        return 'Щоб побачити текст, відкрийте заявку 😅';
+        return 'Текст заявки: \t\n<b> Щоб побачити текст, відкрийте заявку 😅';
     } else {
 		console.error('ArticleBody not found');
-		return 'Щоб побачити текст, відкрийте заявку 😅';
+		return 'Текст заявки: \t\n<b> Щоб побачити текст, відкрийте заявку 😅';
 	}
 }
 
