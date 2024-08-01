@@ -321,10 +321,10 @@ function getArticleText(text) {
     } else if (messageBrowser.length > 0) {
 		//const articleBody = articleBodyHtml.getElementById('divtagdefaultwrapper');
 		//console.log('divtagdefaultwrapper', articleBody);        
-        return 'Текст заявки: \t\n<b> Щоб побачити текст, відкрийте заявку 😅';
+        return 'Текст заявки: \t\n<b> Щоб побачити текст, відкрийте заявку</b> 😅';
     } else {
 		console.error('ArticleBody not found');
-		return 'Текст заявки: \t\n<b> Щоб побачити текст, відкрийте заявку 😅';
+		return 'Текст заявки: \t\n<b> Щоб побачити текст, відкрийте заявку</b> 😅';
 	}
 }
 
