@@ -354,11 +354,6 @@ function getAnswer(answers) {
 	return answers[id];
 }
 
-/*function getAnswerOnline() {	
-	const id = Math.floor(Math.random() * ((answersOnline.length - 1) - 0 + 1)) + 0;
-	console.log('id',id);
-	return answersOnline[id];
-}*/
 
 function getKindTicket(count) {
 	switch (count.substr(count.length - 1)) {
