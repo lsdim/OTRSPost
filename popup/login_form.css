@@ -43,6 +43,14 @@
 .form button:hover,.form button:active,.form button:focus {
   background: #43A047;
 }
+
+.form button:active{
+  background: #b5e7a0;
+  transform: scale(1.05);
+  border-radius: 10px;
+  color: #3e4444;
+}
+
 .form .message {
   margin: 15px 0 0;
   color: #b3b3b3;
@@ -89,9 +97,10 @@
   color: #EF3B3A;
 }
 body {
-  background: #76b852; /* fallback for old browsers */
-  background: rgb(141,194,111);
-  background: linear-gradient(90deg, rgba(141,194,111,1) 0%, rgba(118,184,82,1) 50%);
+  background: #eaece5 /*#76b852; *//* fallback for old browsers */
+  background: rgb(234, 236, 229);
+  background: linear-gradient(90deg, rgba(234, 236, 229,1) 0%, rgba(178, 194, 191,1) 50%);
+  /*linear-gradient(90deg, rgba(141,194,111,1) 0%, rgba(118,184,82,1) 50%);*/
   font-family: "Roboto", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;      
