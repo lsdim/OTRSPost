@@ -1,4 +1,7 @@
 
+const user = 'lis-ds';
+const password = 'GL0bu$$444';
+
 const dev_chat = '-4228417669';
 const prod_chat = '-4267367123';
 
@@ -165,6 +168,7 @@ async function checkNewTicket(columns) {
     const hours = now.getHours();
 
     if (checkLogin()) {
+		login();
         if (hours >= 8 && hours < 21) {						
             if ([5, 20, 35, 50].includes(minute)) {
                 sendMessage(getAnswer(answersLogin));
@@ -172,6 +176,13 @@ async function checkNewTicket(columns) {
         }
         return;
     }
+	
+	
+	if (window.location.href != 'http://help.ukrposhta.loc/otrs/index.pl?Action=AgentDashboard' &&
+		window.location.href != 'http://help.ukrposhta.loc/otrs/index.pl?') {
+		console.log('Not Dashboard', window.location.href);
+		return;
+	}
 
     const rows = document.getElementsByClassName("MasterAction");
 	
@@ -330,6 +341,21 @@ function getArticleText(text) {
 
 //**************************************	
 
+
+//*************Login***********************
+function login() {
+	const userInput = document.getElementById('User'); 
+	const passwordInput = document.getElementById('Password'); 
+
+	if (userInput && passwordInput) {
+		userInput.value = user; 
+		passwordInput.value = password;
+		document.login.submit();
+	}
+	
+}
+
+//*************End Login*******************
 
 function stringToHTML (text) {
 	let parser = new DOMParser();
