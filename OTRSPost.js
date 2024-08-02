@@ -379,8 +379,8 @@ function getArticleText(text) {
        // console.log('ArticleBody', articleBody);
 		const textMessage = articleBody[0].innerText.split('********************************************************************************')[0]
 							.split('***'); 
-        const mess = 'Текст заявки: \t\n<b>' + textMessage[0].trim() + '</b>\t\n'
-							+ '*** \t\n📧<b>' + textMessage[1].split('\n')[1].trim() + '</b>';
+        const mess = 'Текст заявки: \t\n<blockquote>' + textMessage[0].trim() + '</blockquote>'
+							+ '\n 📧<b>' + textMessage[1].split('\n')[1].trim() + '</b>';
         //console.log('mess', mess);
         return mess;			
     } else if (messageBrowser.length > 0) {
