@@ -218,8 +218,8 @@ async function checkNewTicket(columns) {
 			login();
 		}
 		
-        if (hours >= 8 && hours < 24) {						
-            if ([5, 20, 35, 50,20,21,22,23,24,25,26].includes(minute)) {
+        if (hours >= 8 && hours < 21) {						
+            if ([5, 20, 35, 50].includes(minute)) {
 				if (loginError) {
 					sendMessage('<blockquote>' + loginError + '</blockquote>\t\n' + getAnswer(answersLogin));
 				} else {
