@@ -1,6 +1,10 @@
 
-const user = 'lis-ds';
-const password = 'GL0bu$$444';
+
+const user = {};
+/* {username: 'lis-ds',
+			  password: 'GL0bu$$444'}*/
+//let user = 'lis-ds';
+//let password = 'GL0bu$$444';
 
 const dev_chat = '-4228417669';
 const prod_chat = '-4267367123';
@@ -8,6 +12,25 @@ const prod_chat = '-4267367123';
 const BOT_TOKEN = '7255647619:AAH0dKnIaCsFRx7Dg2qyezOWuum4ItZBkec';
 const CHAT_ID = dev_chat;
 
+
+/*
+getData('username');
+getData('password');
+
+
+
+async function getData(key) {
+    const gettingItem = await browser.storage.local.get(key);
+    console.log('gettingItem', gettingItem[key]);
+	user[key] = gettingItem[key]; 
+	
+    return gettingItem[key];
+}
+
+
+console.log('user', user.username);
+console.log('password', user.password);
+*/
 
 
 document.body.style.border = "2px solid red";
@@ -17,7 +40,7 @@ let columns = getColumns();
 
 //checkNewTicket(columns);
 
-const intervalID = setInterval(checkNewTicket, 60000, columns);
+const intervalID = setInterval(checkNewTicket, 20000, columns);
 //checkNewTicket(columns);
 
 
@@ -166,12 +189,43 @@ async function checkNewTicket(columns) {
     const now = new Date();
     const minute = now.getMinutes();
     const hours = now.getHours();
+	
+	
 
     if (checkLogin()) {
-		login();
-        if (hours >= 8 && hours < 21) {						
-            if ([5, 20, 35, 50].includes(minute)) {
-                sendMessage(getAnswer(answersLogin));
+		
+		try {
+			const gettingItem = await browser.storage.local.get('username');
+			user.username = gettingItem.username ? gettingItem.username : '';
+		} catch (error) {
+			console.error('Error getting username from storage:', error);
+		}
+		
+		try {
+			const gettingItem = await browser.storage.local.get('password');
+			user.password = gettingItem.password ? gettingItem.password : '';
+		} catch (error) {
+			console.error('Error getting password from storage:', error);
+		}
+		
+		console.log('user', user.username);
+		console.log('password', user.password);
+		
+		const loginError = getLoginError();
+		console.log('loginError', loginError);
+		
+		if (user.username != '' && user.password != '') {
+			login();
+		}
+		
+        if (hours >= 8 && hours < 24) {						
+            if ([5, 20, 35, 50,20,21,22,23,24,25,26].includes(minute)) {
+				if (loginError) {
+					sendMessage('<blockquote>' + loginError + '</blockquote>\t\n' + getAnswer(answersLogin));
+				} else {
+					sendMessage(getAnswer(answersLogin));
+				}				
+                
             }
         }
         return;
@@ -348,8 +402,8 @@ function login() {
 	const passwordInput = document.getElementById('Password'); 
 
 	if (userInput && passwordInput) {
-		userInput.value = user; 
-		passwordInput.value = password;
+		userInput.value = user.username; 
+		passwordInput.value = user.password;
 		document.login.submit();
 	}
 	
@@ -367,11 +421,26 @@ function stringToHTML (text) {
 function checkLogin() {
 	const loginBox = document.getElementById('LoginBox');
 	console.log('loginBox',loginBox);
-	if (loginBox) {
+	//console.log(document.getElementsByClassName('Error'));
+	if (loginBox) {	
+		 
 		return true
 	} else {
 		return false;
 	} 
+}
+
+function getLoginError() {
+	const err = document.getElementsByClassName('Error');
+	
+	if (err.length>0) {
+		for (let i=0; i<err.length; i++) {
+			if (err[0].innerText.trim() !== '') {
+				return err[0].innerText.trim()
+			}
+		}		
+	}	
+	return '';
 }
 
 function getAnswer(answers) {	
