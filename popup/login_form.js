@@ -28,6 +28,8 @@ loginForm.addEventListener("submit", (e) => {
   if (username.value == "" || password.value == "") {
     alert("Заповніть обидва поля!");
   } else {
+	  
+	  //changeIcon();
 	  setData(username.value, password.value);
 	  alert("Збережено!");
 
@@ -37,6 +39,30 @@ loginForm.addEventListener("submit", (e) => {
 
   // handle submit
 });
+
+/*
+browser.pageAction.onClicked.addListener((tab) => {
+	console.log('pageAction');
+  browser.pageAction.setIcon({
+    tabId: tab.id,
+    path: {
+		19: "icons/otrs-19.png",
+		38: "icons/otrs-38.png"
+	},
+  });
+});
+
+async function changeIcon() {
+	let settingIcon = await browser.pageAction.setIcon({
+  path: {
+    19: "icons/otrs-19.png",
+	38: "icons/otrs-38.png"
+  },
+});
+
+};
+
+*/
 
 async function setData(username, password) {
 	try {
