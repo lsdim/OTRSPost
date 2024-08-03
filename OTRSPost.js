@@ -13,26 +13,6 @@ const BOT_TOKEN = '7255647619:AAH0dKnIaCsFRx7Dg2qyezOWuum4ItZBkec';
 const CHAT_ID = dev_chat;
 
 
-/*
-getData('username');
-getData('password');
-
-
-
-async function getData(key) {
-    const gettingItem = await browser.storage.local.get(key);
-    console.log('gettingItem', gettingItem[key]);
-	user[key] = gettingItem[key]; 
-	
-    return gettingItem[key];
-}
-
-
-console.log('user', user.username);
-console.log('password', user.password);
-*/
-
-
 document.body.style.border = "2px solid red";
 let columns = getColumns();
 
@@ -40,7 +20,7 @@ let columns = getColumns();
 
 //checkNewTicket(columns);
 
-const intervalID = setInterval(checkNewTicket, 20000, columns);
+const intervalID = setInterval(checkNewTicket, 60000, columns);
 //checkNewTicket(columns);
 
 
@@ -189,6 +169,12 @@ async function checkNewTicket(columns) {
     const now = new Date();
     const minute = now.getMinutes();
     const hours = now.getHours();
+	
+	if (checkDialog()) {
+		console.log('checkDialog');
+		window.location.reload();
+		return;
+	}
 	
 	
 
@@ -417,6 +403,10 @@ function stringToHTML (text) {
 	return doc.body;
 }
 
+function checkDialog() {
+	const dialog = document.getElementsByClassName('Dialog'); 
+	return dialog.length>0;
+}
 
 function checkLogin() {
 	const loginBox = document.getElementById('LoginBox');
