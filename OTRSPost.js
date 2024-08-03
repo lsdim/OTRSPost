@@ -10,7 +10,7 @@ const dev_chat = '-4228417669';
 const prod_chat = '-4267367123';
 
 const BOT_TOKEN = '7255647619:AAH0dKnIaCsFRx7Dg2qyezOWuum4ItZBkec';
-const CHAT_ID = dev_chat;
+const CHAT_ID = prod_chat;
 
 
 document.body.style.border = "2px solid red";
