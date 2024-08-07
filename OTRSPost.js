@@ -1,16 +1,12 @@
 
-
+console.log('start');
 const user = {};
-/* {username: 'lis-ds',
-			  password: 'GL0bu$$444'}*/
-//let user = 'lis-ds';
-//let password = 'GL0bu$$444';
 
 const dev_chat = '-4228417669';
 const prod_chat = '-4267367123';
 
 const BOT_TOKEN = '7255647619:AAH0dKnIaCsFRx7Dg2qyezOWuum4ItZBkec';
-const CHAT_ID = prod_chat;
+const CHAT_ID = dev_chat;
 
 
 document.body.style.border = "2px solid red";
@@ -175,6 +171,14 @@ async function checkNewTicket(columns) {
 		window.location.reload();
 		return;
 	}
+	
+	if (checkNetError()) {
+		console.log('checkNetError');
+		window.location.reload();
+		return;
+	}
+	
+	;
 	
 	
 
@@ -406,6 +410,20 @@ function stringToHTML (text) {
 function checkDialog() {
 	const dialog = document.getElementsByClassName('Dialog'); 
 	return dialog.length>0;
+}
+
+function checkNetError() {
+	const errButt = document.getElementById('netErrorButtonContainer');
+	if (errButt) {
+		 
+		return true
+	} else {
+		return false;
+	}
+	/*
+	if (errButt) {
+		window.location.reload();
+	}*/
 }
 
 function checkLogin() {
