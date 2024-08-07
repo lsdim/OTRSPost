@@ -328,7 +328,7 @@ async function getTicketText(url) {
         const article = getArticleID(htmlID);
 		const articleURL = article.url;
 		
-		console.log('article', article);
+		//console.log('article', article);
 
         if (!articleURL) {
             throw new Error('Article URL not found');
@@ -392,11 +392,10 @@ async function getArticleText(text, articleId) {
 				const iframeHtml = stringToHTML(iframeText);
 				const textMessage = iframeHtml.innerText.trim(); 
 				//console.log('textMessage',textMessage);
-				const mess = 'Текст заявки: \t\n<blockquote>' + textMessage + '</blockquote>';
+				const mess = 'Текст заявки: \t\n<blockquote expandable>' + textMessage + '</blockquote>';
 				return mess;			
 			} catch (error) {
 				console.error('There has been a problem with your fetch operation:', error);
-				return '';
 			}
 			
 		}
