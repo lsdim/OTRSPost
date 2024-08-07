@@ -325,22 +325,23 @@ async function getTicketText(url) {
         }
 
         const htmlID = await responseID.text();
-        const articleID = getArticleID(htmlID);
+        const article = getArticleID(htmlID);
+		const articleURL = article.url;
 		
-		//console.log('articleID', articleID);
+		console.log('article', article);
 
-        if (!articleID) {
-            throw new Error('Article ID not found');
+        if (!articleURL) {
+            throw new Error('Article URL not found');
         }
 
-		//console.log(`${url}#${articleID}`);
-        const response2 = await fetch(`http://help.ukrposhta.loc${articleID}`);
+		//console.log(`${url}#${articleURL}`);
+        const response2 = await fetch(`http://help.ukrposhta.loc${articleURL}`);
         if (!response2.ok) {
             throw new Error('Network response was not ok for the second fetch');
         }
 
-        const html2 = await response2.text();
-        return getArticleText(html2);
+        const html2 = await response2.text();		
+        return getArticleText(html2, article.id);
     } catch (error) {
         console.error('There has been a problem with your fetch operation:', error);
     }
@@ -354,11 +355,13 @@ function getArticleID(text) {
         return null;
     }
 	
-	//console.log('no', content, content[content.length-1].children[0].value);
-    return content[content.length-1].children[0].value;
+	//console.log('no', content, content[content.length-1].children[1].value);
+	const articleID = {id: content[content.length-1].children[1].value,
+					  url: content[content.length-1].children[0].value}
+    return articleID;
 }
 
-function getArticleText(text) {
+async function getArticleText(text, articleId) {
     const articleBodyHtml = stringToHTML(text);
     const articleBody = articleBodyHtml.getElementsByClassName('ArticleBody');
 	const messageBrowser = articleBodyHtml.getElementsByClassName('MessageBrowser');
@@ -373,9 +376,31 @@ function getArticleText(text) {
 							+ '\n 📧<b>' + textMessage[1].split('\n')[1].trim() + '</b>';
         //console.log('mess', mess);
         return mess;			
-    } else if (messageBrowser.length > 0) {
-		//const articleBody = articleBodyHtml.getElementById('divtagdefaultwrapper');
-		//console.log('divtagdefaultwrapper', articleBody);        
+    } else if (messageBrowser.length > 0) {		
+		const ifr = articleBodyHtml.getElementsByClassName('ArticleMailContentHTMLWrapper');
+		
+		if (ifr.length>0) {			
+			const src = ifr[0].children[`Iframe${articleId}`].src;			
+
+			try {
+				const responseID = await fetch(src);
+				if (!responseID.ok) {
+					throw new Error('Network response was not ok for the first fetch');
+				}
+
+				const iframeText = await responseID.text();				
+				const iframeHtml = stringToHTML(iframeText);
+				const textMessage = iframeHtml.innerText.trim(); 
+				//console.log('textMessage',textMessage);
+				const mess = 'Текст заявки: \t\n<blockquote>' + textMessage + '</blockquote>';
+				return mess;			
+			} catch (error) {
+				console.error('There has been a problem with your fetch operation:', error);
+				return '';
+			}
+			
+		}
+		       
         return 'Текст заявки: \t\n<b> Щоб побачити текст, відкрийте заявку</b> 😅';
     } else {
 		console.error('ArticleBody not found');
