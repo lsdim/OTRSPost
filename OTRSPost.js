@@ -198,8 +198,8 @@ async function checkNewTicket(columns) {
 			console.error('Error getting password from storage:', error);
 		}
 		
-		console.log('user', user.username);
-		console.log('password', user.password);
+		//console.log('user', user.username);
+		//console.log('password', user.password);
 		
 		const loginError = getLoginError();
 		console.log('loginError', loginError);
@@ -412,6 +412,13 @@ async function getArticleText(text, articleId) {
 
 //*************Login***********************
 function login() {
+	
+	const graf = document.getElementsByClassName('D3GraphCanvas');
+	if (graf.length>0) {
+		window.location.reload();
+		return;
+	}
+	
 	const userInput = document.getElementById('User'); 
 	const passwordInput = document.getElementById('Password'); 
 
@@ -452,7 +459,7 @@ function checkNetError() {
 
 function checkLogin() {
 	const loginBox = document.getElementById('LoginBox');
-	console.log('loginBox',loginBox);
+	//console.log('loginBox',loginBox);
 	//console.log(document.getElementsByClassName('Error'));
 	if (loginBox) {	
 		 
