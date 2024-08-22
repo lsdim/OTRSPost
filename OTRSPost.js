@@ -6,7 +6,7 @@ const dev_chat = '-4228417669';
 const prod_chat = '-4267367123';
 
 const BOT_TOKEN = '7255647619:AAH0dKnIaCsFRx7Dg2qyezOWuum4ItZBkec';
-const CHAT_ID = dev_chat;
+const CHAT_ID = prod_chat;
 
 
 document.body.style.border = "2px solid red";
@@ -286,8 +286,8 @@ async function checkNewTicket(columns) {
 				*/
 				
 				sendMessage(
-							'🚨' +columns[ticketNumId] + '🚨' + '\t\n' 
-							+ `<a href="${ticketURL}">`+ getInnerText(rows[i],ticketNumId) + '</a>\t\n\n'  
+							`🚨<a href="${ticketURL}">` +columns[ticketNumId] + '</a>🚨' + '\t\n' 
+							+ getInnerText(rows[i],ticketNumId) + '\t\n\n'  
 							+ columns[createdId] + '\t\n<b>' + getInnerText(rows[i],createdId) + ' (' + getInnerText(rows[i],ageId) + ')</b>\t\n\n' 
 							+ columns[ticketTagId] + '\t\n<b>' + getInnerText(rows[i],ticketTagId) + '</b>\t\n\n'
 							+ columns[titleId] + '\t\n<b>' + getInnerText(rows[i],titleId) + '</b>\t\n\n' 
