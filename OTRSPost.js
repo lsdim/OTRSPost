@@ -1,4 +1,3 @@
-
 console.log('start');
 const user = {};
 
@@ -445,8 +444,9 @@ function checkDialog() {
 
 function checkNetError() {
 	const errButt = document.getElementById('netErrorButtonContainer');
-	if (errButt) {
-		 
+	const errOTRS = document.getElementsByClassName('ErrorMessage'); 
+	
+	if (errButt || errOTRS.length>0) {		 
 		return true
 	} else {
 		return false;
