@@ -183,13 +183,18 @@ function runUpload(url, data, method) {
 		mode: 'cors',
 		body: JSON.stringify(data)
 	})
-		.then(response => response.json())
+		.then(response => {
+			if (!response.ok) {
+				throw new Error(`HTTP error! Status: ${response.status}`);
+			}
+			return response.json();
+		})
 		.then(data => {
 			console.log('Upload successfully:', data);
 			// showLog(`Завантаженно шаблон ${data.name}`);
 		})
 		.catch(error => {
-			console.error('Error Upload:', error);
+			console.error(`Error Upload to ${url} using ${method}:`, error);
 		});
 }
 
