@@ -19,7 +19,8 @@
   
   "permissions": [
     "storage",
-    "*://api.telegram.org/*"
+    "*://api.telegram.org/*",
+    "*://otrs-patterns-default-rtdb.europe-west1.firebasedatabase.app/*"
   ],
   
   "page_action": {

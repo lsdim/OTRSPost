@@ -260,7 +260,9 @@ async function checkNewTicket(columns) {
         tickets = gettingItem.tickets ? [...gettingItem.tickets] : [];
     } catch (error) {
         console.error('Error getting tickets from storage:', error);
-    }
+	}
+	
+	//setTicketCount();
 
     if (rows.length > 0) {
         for (let i = 0; i < rows.length; i++) {
@@ -306,7 +308,7 @@ async function checkNewTicket(columns) {
             console.error('Error setting tickets to storage:', error);
         }
 
-        if (hours >= 8 && hours < 21 && minute === 05) {
+        if (hours >= 8 && hours < 21 && minute === 5) {
             sendMessage(getAnswer(answersOnline));
         }
     } else {
@@ -314,6 +316,43 @@ async function checkNewTicket(columns) {
             sendMessage('<tg-emoji emoji-id="5368324170671202286">😎</tg-emoji> На даний момент необроблених заявок немає');
         }
     }
+}
+
+function setTicketCount() {
+	const ticketsCount = document.getElementById('Dashboard0130-TicketOpenAll').innerText.split('(')[1].split(')')[0]; 
+	console.log('ticketsCount', ticketsCount);
+	uploadTicketCount(ticketsCount);
+}
+
+function uploadTicketCount(ticketsCount) {
+    const url = `https://otrs-patterns-default-rtdb.europe-west1.firebasedatabase.app/info/ticketsCount.json`;
+	
+	const data = {
+		Count: ticketsCount,
+		timeUpdate: new Date().toLocaleString()
+	};
+	
+	runUpload(url, data, 'PATCH');	   
+}
+
+function runUpload(url, data, method) {
+	
+	fetch(url, {
+        method: method,
+		headers: {
+            'Content-Type': 'application/json'
+        },
+		mode: 'cors',        
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Upload successfully:', data);
+		// showLog(`Завантаженно шаблон ${data.name}`);
+    })
+    .catch(error => {
+        console.error('Error Upload:', error);
+    });
 }
 
 async function getTicketText(url) {	
@@ -444,9 +483,11 @@ function checkDialog() {
 
 function checkNetError() {
 	const errButt = document.getElementById('netErrorButtonContainer');
-	const errOTRS = document.getElementsByClassName('ErrorMessage'); 
+	const errOTRS = document.getElementsByClassName('ErrorMessage');
+	//const errAjax = document.getElementById('AjaxErrorDialog');
 	
-	if (errButt || errOTRS.length>0) {		 
+	if (errButt || errOTRS.length>0) {	
+		//console.log(errButt, errOTRS.length);
 		return true
 	} else {
 		return false;
@@ -539,6 +580,8 @@ function sendMessage(message) {
         text: message,
 		parse_mode: 'html'
     };
+	
+	console.log('try send message');
 
     fetch(url, {
         method: 'POST',
