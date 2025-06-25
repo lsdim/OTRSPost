@@ -1,18 +1,30 @@
 console.log('start');
-const user = {};
+let user = {};
 
 const dev_chat = '-4228417669';
 const prod_chat = '-4267367123';
 
 const BOT_TOKEN = '7255647619:AAH0dKnIaCsFRx7Dg2qyezOWuum4ItZBkec';
-const CHAT_ID = dev_chat;
+const CHAT_ID = prod_chat;
 
 
 document.body.style.border = "2px solid red";
 let columns = getColumns();
 
+let timeCheck = 60000;
 
-const intervalID = setInterval(checkNewTicket, 60000, columns);
+async function getTimeCheck() {
+	await getData('timeCheck').then(value => {
+		if (value) {
+			timeCheck = +value * 1000;
+		}
+	});
+}
+
+(async function initializeInterval() {
+	await getTimeCheck();
+	setInterval(() => checkNewTicket(columns), timeCheck);
+})();
 
 
 //**************************************
@@ -35,19 +47,9 @@ async function checkNewTicket(columns) {
 
 	if (checkLogin()) {
 
-		try {
-			const gettingItem = await browser.storage.local.get('username');
-			user.username = gettingItem.username ? gettingItem.username : '';
-		} catch (error) {
-			console.error('Error getting username from storage:', error);
-		}
-
-		try {
-			const gettingItem = await browser.storage.local.get('password');
-			user.password = gettingItem.password ? gettingItem.password : '';
-		} catch (error) {
-			console.error('Error getting password from storage:', error);
-		}
+		await getData('user').then(value => {
+			user = value ? { ...value } : {};
+		});
 
 		const loginError = getLoginError();
 		console.log('loginError', loginError);
@@ -63,7 +65,6 @@ async function checkNewTicket(columns) {
 				} else {
 					sendMessage(getAnswer(answersLogin));
 				}
-
 			}
 		}
 		return;
@@ -427,6 +428,12 @@ function sendMessage(message) {
 		.catch(error => {
 			console.error('Error sending message:', error);
 		});
+}
+
+async function getData(key) {
+	const gettingItem = await browser.storage.local.get(key);
+	console.log('gettingItem', gettingItem[key]);
+	return gettingItem[key];
 }
 
 

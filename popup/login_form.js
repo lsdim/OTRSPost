@@ -3,38 +3,53 @@ const loginForm = document.getElementById('loginForm');
 
 const username = document.getElementById("username");
 const password = document.getElementById("password");
+const timeCheck = document.getElementById("timeCheck");
+
+let user = {};
 
 
- getData('username').then(value => {
-		if (value) {
-			username.value = value;
-		}
-        
-		getData('password').then(value => {
-			if (value) {
-				password.value = value;
-			}			
-		});
- });
+getData('timeCheck').then(value => {
+  if (value) {
+    timeCheck.value = value;
+  }
+});
 
-    
+//   getData('password').then(value => {
+//     if (value) {
+//       password.value = value;
+//     }
+//   });
+// });
+
+getData('user').then(value => {
+  if (value) {
+    user = { ...value };
+    username.value = user.username;
+    password.value = user.password;
+  }
+});
+
+
 
 
 loginForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  
-  
+
+
 
   if (username.value == "" || password.value == "") {
     alert("Заповніть обидва поля!");
   } else {
-	  
-	  //changeIcon();
-	  setData(username.value, password.value);
-	  alert("Збережено!");
+
+    //changeIcon();
+    user.username = username.value;
+    user.password = password.value;
+    setData('user', user);
+    setData('timeCheck', timeCheck.value);
+    alert("Збережено!");
 
   }
-  
+
   console.log('submit');
 
   // handle submit
@@ -42,21 +57,21 @@ loginForm.addEventListener("submit", (e) => {
 
 /*
 browser.pageAction.onClicked.addListener((tab) => {
-	console.log('pageAction');
+  console.log('pageAction');
   browser.pageAction.setIcon({
     tabId: tab.id,
     path: {
-		19: "icons/otrs-19.png",
-		38: "icons/otrs-38.png"
-	},
+    19: "icons/otrs-19.png",
+    38: "icons/otrs-38.png"
+  },
   });
 });
 
 async function changeIcon() {
-	let settingIcon = await browser.pageAction.setIcon({
+  let settingIcon = await browser.pageAction.setIcon({
   path: {
     19: "icons/otrs-19.png",
-	38: "icons/otrs-38.png"
+  38: "icons/otrs-38.png"
   },
 });
 
@@ -64,26 +79,35 @@ async function changeIcon() {
 
 */
 
-async function setData(username, password) {
-	try {
-            await browser.storage.local.set({ 'username': username, 'password': password });
-        } catch (error) {
-            console.error('Error setting tickets to storage:', error);
-        }
-		console.log('set');
+// async function setData(username, password) {
+//   try {
+//     await browser.storage.local.set({ 'username': username, 'password': password });
+//   } catch (error) {
+//     console.error('Error setting tickets to storage:', error);
+//   }
+//   console.log('set');
+// }
+
+async function setData(key, value) {
+  try {
+    await browser.storage.local.set({ [key]: value });
+  } catch (error) {
+    console.error('Error setting tickets to storage:', error);
+  }
+  console.log('set');
 }
 
 async function getData(key) {
-	const gettingItem = await browser.storage.local.get(key);
-    console.log('gettingItem', gettingItem[key]);
-    return gettingItem[key];
+  const gettingItem = await browser.storage.local.get(key);
+  // console.log('gettingItem', gettingItem[key]);
+  return gettingItem[key];
 
 }
 
-function setItem() {
-  console.log("OK");
-}
+// function setItem() {
+//   console.log("OK");
+// }
 
-function onError(error) {
-  console.log(error);
-}
+// function onError(error) {
+//   console.log(error);
+// }
