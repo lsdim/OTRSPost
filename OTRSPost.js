@@ -13,7 +13,7 @@ async function getBotInfo() {
 	getBotInfoFromDB(DBUrl).then(data => {
 		if (data) {
 			botInfo = { ...data };
-			botInfo.CHAT_ID = botInfo.dev_chat;	 //botInfo.dev_chat or botInfo.prod_chat based on your environment
+			botInfo.CHAT_ID = botInfo.prod_chat;	 //botInfo.dev_chat or botInfo.prod_chat based on your environment
 			console.log('CHAT_ID:', botInfo.CHAT_ID);
 			console.log('botInfo', botInfo);
 		} else {
@@ -161,8 +161,8 @@ async function checkNewTicket(columns) {
 			}
 		}
 
-		console.log('tickets', tickets);
-		console.log('sendMessageResult', sendMessageResult);
+		// console.log('tickets', tickets);
+		// console.log('sendMessageResult', sendMessageResult);
 		if (sendMessageResult) {
 			try {
 				await browser.storage.local.set({ 'tickets': tickets });
@@ -443,7 +443,6 @@ async function sendMessage(message) {
 	}
 
 	if (!botInfo.BOT_TOKEN) {
-		console.log('BOT_TOKEN is not set');
 		return false;
 	}
 
@@ -511,9 +510,9 @@ async function getBotInfoFromDB(url) {
 async function getToken() {
 
 	let token = {};
-	// await getData('token').then(value => {
-	// 	token = value ? { ...value } : {};
-	// });
+	await getData('token').then(value => {
+		token = value ? { ...value } : {};
+	});
 
 	if (token.expiresIn) {
 		const dateExp = new Date(token.expiresIn);
