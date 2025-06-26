@@ -4,6 +4,10 @@ let user = {};
 let botInfo = {};
 let lastTime = '0000';
 
+getData('lastTime').then(value => {
+	lastTime = value ? value : '0000';
+});
+
 const apiKey = 'AIzaSyDDQPP3Csks1c6p-gwZPXKHoLec1yQmkAo';
 const DBUrl = 'https://otrs-patterns-default-rtdb.europe-west1.firebasedatabase.app/info/TelegramBot.json';
 const AuthUrl = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`;
@@ -13,7 +17,7 @@ async function getBotInfo() {
 	getBotInfoFromDB(DBUrl).then(data => {
 		if (data) {
 			botInfo = { ...data };
-			botInfo.CHAT_ID = botInfo.prod_chat;	 //botInfo.dev_chat or botInfo.prod_chat based on your environment
+			botInfo.CHAT_ID = botInfo.dev_chat;	 //botInfo.dev_chat or botInfo.prod_chat based on your environment
 			// console.log('CHAT_ID:', botInfo.CHAT_ID);
 			// console.log('botInfo', botInfo);
 		} else {
@@ -79,18 +83,12 @@ async function checkNewTicket(columns) {
 			login();
 		}
 
-		if (hours >= 8 && hours < 21) {
-			if ([5, 20, 35, 50].includes(minute)) {
-				if (hours + '' + minute !== lastTime) {
-					if (loginError) {
-						sendMessage('<blockquote>' + loginError + '</blockquote>\t\n' + getAnswer(answersLogin));
-					} else {
-						sendMessage(getAnswer(answersLogin));
-					}
-				}
-				lastTime = hours + '' + minute;
-			}
+		if (loginError) {
+			sendPeriodicMessage(hours, minute, '<blockquote>' + loginError + '</blockquote>\t\n' + getAnswer(answersLogin), [5, 20, 35, 50]);
+		} else {
+			sendPeriodicMessage(hours, minute, getAnswer(answersLogin), [5, 20, 35, 50]);
 		}
+
 		return;
 	}
 
@@ -164,8 +162,7 @@ async function checkNewTicket(columns) {
 			}
 		}
 
-		// console.log('tickets', tickets);
-		// console.log('sendMessageResult', sendMessageResult);
+
 		if (sendMessageResult) {
 			try {
 				await browser.storage.local.set({ 'tickets': tickets });
@@ -176,20 +173,28 @@ async function checkNewTicket(columns) {
 		}
 
 
-		if (hours >= 8 && hours < 21 && minute === 5) {
-			if (hours + '' + minute !== lastTime) {
-				sendMessage(getAnswer(answersOnline));
-			}
-			lastTime = hours + '' + minute;
-		}
+		sendPeriodicMessage(hours, minute, getAnswer(answersOnline), [5]);
 	} else {
-		if (hours >= 8 && hours < 21 && minute === 5) {
-			if (hours + '' + minute !== lastTime) {
-				sendMessage('<tg-emoji emoji-id="5368324170671202286">😎</tg-emoji> На даний момент необроблених заявок немає');
-			}
-			lastTime = hours + '' + minute;
 
+		const answerNoTickets = `<tg-emoji emoji-id="5368324170671202286">😎</tg-emoji> На даний момент необроблених заявок немає`;
+
+		sendPeriodicMessage(hours, minute, answerNoTickets, [5]);
+	}
+}
+
+function sendPeriodicMessage(hours, minute, message, checkPoint) {
+	if (hours >= 8 && hours < 21) {
+		if (checkPoint.includes(minute)) {
+			if (hours + '' + minute !== lastTime) {
+				sendMessage(message);
+			}
+
+			lastTime = hours + '' + minute;
+			setData('lastTime', lastTime).then(() => {
+				console.log('lastTime saved:', lastTime);
+			})
 		}
+
 	}
 }
 
