@@ -1,8 +1,8 @@
-console.log('start - ' + new Date().toLocaleString());
-let user = {};
+console.log('start');
 
+let user = {};
 let botInfo = {};
-console.log('botInfo1', botInfo);
+let lastTime = '0000';
 
 const apiKey = 'AIzaSyDDQPP3Csks1c6p-gwZPXKHoLec1yQmkAo';
 const DBUrl = 'https://otrs-patterns-default-rtdb.europe-west1.firebasedatabase.app/info/TelegramBot.json';
@@ -14,8 +14,8 @@ async function getBotInfo() {
 		if (data) {
 			botInfo = { ...data };
 			botInfo.CHAT_ID = botInfo.prod_chat;	 //botInfo.dev_chat or botInfo.prod_chat based on your environment
-			console.log('CHAT_ID:', botInfo.CHAT_ID);
-			console.log('botInfo', botInfo);
+			// console.log('CHAT_ID:', botInfo.CHAT_ID);
+			// console.log('botInfo', botInfo);
 		} else {
 			console.error('Failed to load bot info');
 		}
@@ -81,11 +81,14 @@ async function checkNewTicket(columns) {
 
 		if (hours >= 8 && hours < 21) {
 			if ([5, 20, 35, 50].includes(minute)) {
-				if (loginError) {
-					sendMessage('<blockquote>' + loginError + '</blockquote>\t\n' + getAnswer(answersLogin));
-				} else {
-					sendMessage(getAnswer(answersLogin));
+				if (hours + '' + minute !== lastTime) {
+					if (loginError) {
+						sendMessage('<blockquote>' + loginError + '</blockquote>\t\n' + getAnswer(answersLogin));
+					} else {
+						sendMessage(getAnswer(answersLogin));
+					}
 				}
+				lastTime = hours + '' + minute;
 			}
 		}
 		return;
@@ -174,11 +177,18 @@ async function checkNewTicket(columns) {
 
 
 		if (hours >= 8 && hours < 21 && minute === 5) {
-			sendMessage(getAnswer(answersOnline));
+			if (hours + '' + minute !== lastTime) {
+				sendMessage(getAnswer(answersOnline));
+			}
+			lastTime = hours + '' + minute;
 		}
 	} else {
 		if (hours >= 8 && hours < 21 && minute === 5) {
-			sendMessage('<tg-emoji emoji-id="5368324170671202286">😎</tg-emoji> На даний момент необроблених заявок немає');
+			if (hours + '' + minute !== lastTime) {
+				sendMessage('<tg-emoji emoji-id="5368324170671202286">😎</tg-emoji> На даний момент необроблених заявок немає');
+			}
+			lastTime = hours + '' + minute;
+
 		}
 	}
 }
