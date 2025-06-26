@@ -15,22 +15,21 @@
       "js": ["OTRSPost.js", "answers.js"]
     }
   ],
-  
-  
+
   "permissions": [
     "storage",
     "*://api.telegram.org/*",
+    "*://identitytoolkit.googleapis.com/*",
     "*://otrs-patterns-default-rtdb.europe-west1.firebasedatabase.app/*"
   ],
-  
-  "page_action": {
-	"show_matches": ["*://*.help.ukrposhta.loc/otrs/index.pl*"],
-	"default_icon": {
-		"19": "icons/otrs-19.png",
-		"38": "icons/otrs-38.png"
-	},
-	"default_title": "OTRS bot",
-	"default_popup": "popup/login_form.html"
-  }
 
+  "page_action": {
+    "show_matches": ["*://*.help.ukrposhta.loc/otrs/index.pl*"],
+    "default_icon": {
+      "19": "icons/otrs-19.png",
+      "38": "icons/otrs-38.png"
+    },
+    "default_title": "OTRS bot",
+    "default_popup": "popup/login_form.html"
+  }
 }

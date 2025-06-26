@@ -1,11 +1,32 @@
-console.log('start');
+console.log('start - ' + new Date().toLocaleString());
 let user = {};
 
-const dev_chat = '-4228417669';
-const prod_chat = '-4267367123';
+let botInfo = {};
+console.log('botInfo1', botInfo);
 
-const BOT_TOKEN = '7255647619:AAH0dKnIaCsFRx7Dg2qyezOWuum4ItZBkec';
-const CHAT_ID = prod_chat;
+const apiKey = 'AIzaSyDDQPP3Csks1c6p-gwZPXKHoLec1yQmkAo';
+const DBUrl = 'https://otrs-patterns-default-rtdb.europe-west1.firebasedatabase.app/info/TelegramBot.json';
+const AuthUrl = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`;
+
+
+async function getBotInfo() {
+	getBotInfoFromDB(DBUrl).then(data => {
+		if (data) {
+			botInfo = { ...data };
+			botInfo.CHAT_ID = botInfo.dev_chat;	 //botInfo.dev_chat or botInfo.prod_chat based on your environment
+			console.log('CHAT_ID:', botInfo.CHAT_ID);
+			console.log('botInfo', botInfo);
+		} else {
+			console.error('Failed to load bot info');
+		}
+	}).catch(error => {
+		console.error('Error fetching bot info:', error);
+	});
+}
+
+getBotInfo();
+
+
 
 
 document.body.style.border = "2px solid red";
@@ -77,6 +98,7 @@ async function checkNewTicket(columns) {
 		return;
 	}
 
+
 	const rows = document.getElementsByClassName("MasterAction");
 
 	/*
@@ -115,6 +137,7 @@ async function checkNewTicket(columns) {
 	}
 
 	//setTicketCount();
+	let sendMessageResult = false;
 
 	if (rows.length > 0) {
 		for (let i = 0; i < rows.length; i++) {
@@ -126,7 +149,7 @@ async function checkNewTicket(columns) {
 				const ticketURL = getTicketURL(rows[i], idList.ticketNumId);
 				const ticketText = await getTicketText(ticketURL); // Асинхронний виклик
 
-				sendMessage(
+				sendMessageResult = await sendMessage(
 					`🚨<a href="${ticketURL}">` + columns[idList.ticketNumId] + '</a>🚨' + '\t\n'
 					+ getInnerText(rows[i], idList.ticketNumId) + '\t\n\n'
 					+ columns[idList.createdId] + '\t\n<b>' + getInnerText(rows[i], idList.createdId) + ' (' + getInnerText(rows[i], idList.ageId) + ')</b>\t\n\n'
@@ -138,11 +161,17 @@ async function checkNewTicket(columns) {
 			}
 		}
 
-		try {
-			await browser.storage.local.set({ 'tickets': tickets });
-		} catch (error) {
-			console.error('Error setting tickets to storage:', error);
+		console.log('tickets', tickets);
+		console.log('sendMessageResult', sendMessageResult);
+		if (sendMessageResult) {
+			try {
+				await browser.storage.local.set({ 'tickets': tickets });
+			} catch (error) {
+				console.error('Error setting tickets to storage:', error);
+			}
+
 		}
+
 
 		if (hours >= 8 && hours < 21 && minute === 5) {
 			sendMessage(getAnswer(answersOnline));
@@ -408,10 +437,19 @@ function getTicketURL(row, id) {
 	return row.children[id].children[0].href
 }
 
-function sendMessage(message) {
-	const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+async function sendMessage(message) {
+	if (!botInfo.BOT_TOKEN) {
+		await getBotInfo();
+	}
+
+	if (!botInfo.BOT_TOKEN) {
+		console.log('BOT_TOKEN is not set');
+		return false;
+	}
+
+	const url = `https://api.telegram.org/bot${botInfo.BOT_TOKEN}/sendMessage`;
 	const data = {
-		chat_id: CHAT_ID,
+		chat_id: botInfo.CHAT_ID,
 		text: message,
 		parse_mode: 'html'
 	};
@@ -429,20 +467,141 @@ function sendMessage(message) {
 		.then(response => response.json())
 		.then(data => {
 			//console.log('Message sent successfully:', data);
+			return true;
 		})
 		.catch(error => {
 			console.error('Error sending message:', error);
+			return false;
 		});
+	return true;
 }
 
 async function getData(key) {
 	const gettingItem = await browser.storage.local.get(key);
-	console.log('gettingItem', gettingItem[key]);
+	// console.log('gettingItem', gettingItem[key]);
 	return gettingItem[key];
 }
 
 
+//****************************Get Data from BD***************
 
+async function getBotInfoFromDB(url) {
+	try {
+		const token = await getToken();
+		if (!token.idToken) {
+			alert('OTRS Bot - Не вдалося отримати дані. Перевірте логін і пароль.');
+			return;
+		}
+		url = url + `?auth=${token.idToken}`;
+		const responseID = await fetch(url);
+		if (!responseID.ok) {
+			throw new Error('Network response was not ok for the first fetch');
+		}
+
+		const json = await responseID.json();
+		//console.log('json', json);
+		return json;
+
+	} catch (error) {
+		console.error('There has been a problem with your fetch operation:', error);
+	}
+}
+
+
+async function getToken() {
+
+	let token = {};
+	// await getData('token').then(value => {
+	// 	token = value ? { ...value } : {};
+	// });
+
+	if (token.expiresIn) {
+		const dateExp = new Date(token.expiresIn);
+		if (new Date() > dateExp) {
+			console.log('Token expired');
+			token = await loginDB();
+		} else {
+			// console.log('token.expiresIn', token.expiresIn);
+		}
+	} else {
+		token = await loginDB();
+	}
+
+	return token;
+}
+
+async function loginDB() {
+	let user = {};
+	await getData('user').then(value => {
+		if (value) {
+			user = { ...value };
+		}
+	});
+
+	if (!user.username || !user.password) {
+		alert('OTRS Bot - Не вказано логін або пароль');
+		return {};
+	}
+
+	const data = {
+		email: `${user.username}@ukrposhta.ua`,
+		password: user.password,
+		returnSecureToken: true
+	};
+
+	let loginData = {};
+	await runPost(AuthUrl, data).then(response => {
+		loginData = { ...response };
+	});
+
+	if (loginData.error) {
+		console.error('Помилка при авторизації', loginData.error.message);
+		return {};
+	}
+
+	const dateExp = new Date(new Date().getTime() + +loginData.expiresIn * 1000);
+	const token = {
+		idToken: loginData.idToken,
+		expiresIn: dateExp.toString()
+	};
+	await setData('token', token);
+
+	return token;
+
+}
+
+async function runPost(url, data) {
+
+	try {
+		const responseID = await fetch(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			mode: 'cors',
+			body: JSON.stringify(data)
+		});
+		if (!responseID.ok) {
+			console.log('responseID', responseID);
+			// throw new Error(responseID);
+		}
+
+		const json = await responseID.json();
+		return json;
+
+	} catch (error) {
+		console.error('There has been a problem:', error);
+	}
+}
+
+async function setData(key, value) {
+	try {
+		await browser.storage.local.set({ [key]: value });
+	} catch (error) {
+		console.error(`Error setting ${key} to storage:`, error);
+	}
+
+}
 
 
 
