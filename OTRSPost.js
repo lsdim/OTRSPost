@@ -23,25 +23,22 @@ function main() {
         lastTime = value ? value : '0000';
     });
 
-    const apiKey = 'AIzaSyDDQPP3Csks1c6p-gwZPXKHoLec1yQmkAo';
-    const DBUrl = 'https://otrs-patterns-default-rtdb.europe-west1.firebasedatabase.app/info/TelegramBot.json';
-    const AuthUrl = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`;
+    let apiKey = '';
+    let DBUrl = '';
+    let AuthUrl = '';
 
-
-    async function getBotInfo() {
-        getBotInfoFromDB(DBUrl).then(data => {
-            if (data) {
-                botInfo = { ...data };
-                botInfo.CHAT_ID = botInfo.prod_chat;	 //botInfo.dev_chat or botInfo.prod_chat based on your environment
-            } else {
-                console.error('Failed to load bot info');
-            }
-        }).catch(error => {
-            console.error('Error fetching bot info:', error);
-        });
-    }
-
-    getBotInfo();
+    // Get apiKey from storage before using it
+    getData('apiKey').then(key => {
+        if (key) {
+            apiKey = key;
+            DBUrl = 'https://otrs-patterns-default-rtdb.europe-west1.firebasedatabase.app/info/TelegramBot.json';
+            AuthUrl = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`;
+            getBotInfo(); // Now we can get bot info
+        } else {
+            console.error('Firebase API Key is not set in the extension options.');
+            alert('OTRS Bot - Не вказано Firebase API Key в налаштуваннях розширення!');
+        }
+    });
 
     document.body.style.border = "2px solid green"; // Green indicates script is running
     let columns = getColumns();
@@ -283,6 +280,14 @@ function main() {
         return articleID;
     }
 
+    function escapeHTML(str) {
+        return str.replace(/&/g, '&amp;')
+                  .replace(/</g, '&lt;')
+                  .replace(/>/g, '&gt;')
+                  .replace(/"/g, '&quot;')
+                  .replace(/'/g, '&#039;');
+    }
+
     async function getArticleText(text, articleId) {
         const articleBodyHtml = stringToHTML(text);
         const articleBody = articleBodyHtml.getElementsByClassName('ArticleBody');
@@ -291,8 +296,8 @@ function main() {
         if (articleBody.length > 0) {
             const textMessage = articleBody[0].innerText.split('********************************************************************************')[0]
                 .split('***');
-            const mess = 'Текст заявки: \t\n<blockquote>' + textMessage[0].trim() + '</blockquote>'
-                + '\n 📧<b>' + textMessage[1].split('\n')[1].trim() + '</b>';
+            const mess = 'Текст заявки: \t\n<blockquote>' + escapeHTML(textMessage[0].trim()) + '</blockquote>'
+                + '\n 📧<b>' + escapeHTML(textMessage[1].split('\n')[1].trim()) + '</b>';
             return mess;
         } else if (messageBrowser.length > 0) {
             const ifr = articleBodyHtml.getElementsByClassName('ArticleMailContentHTMLWrapper');
@@ -309,7 +314,7 @@ function main() {
                     const iframeText = await responseID.text();
                     const iframeHtml = stringToHTML(iframeText);
                     const textMessage = iframeHtml.innerText.trim();
-                    const mess = 'Текст заявки: \t\n<blockquote expandable>' + textMessage + '</blockquote>';
+                    const mess = 'Текст заявки: \t\n<blockquote expandable>' + escapeHTML(textMessage) + '</blockquote>';
                     return mess;
                 } catch (error) {
                     console.error('There has been a problem with your fetch operation:', error);
