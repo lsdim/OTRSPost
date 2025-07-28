@@ -4,7 +4,7 @@
       "updates": [
         {
           "version": "1.1",
-          "update_link": "https://your-server.com/path/to/otrspost-1.1-signed.xpi"
+          "update_link": "https://lsdim.github.io/OTRSPost/otrspost-1.1-signed.xpi"
         }
       ]
     }
