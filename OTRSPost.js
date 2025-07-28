@@ -40,6 +40,19 @@ function main() {
         }
     });
 
+    async function getBotInfo() {
+        getBotInfoFromDB(DBUrl).then(data => {
+            if (data) {
+                botInfo = { ...data };
+                botInfo.CHAT_ID = botInfo.prod_chat;	 //botInfo.dev_chat or botInfo.prod_chat based on your environment
+            } else {
+                console.error('Failed to load bot info');
+            }
+        }).catch(error => {
+            console.error('Error fetching bot info:', error);
+        });
+    }
+
     document.body.style.border = "2px solid green"; // Green indicates script is running
     let columns = getColumns();
 
