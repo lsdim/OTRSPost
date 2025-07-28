@@ -36,8 +36,8 @@
 
   "browser_specific_settings": {
     "gecko": {
-      "id": "otrspost@ukrposhta.ua",
-      "update_url": "https://your-server.com/updates.json"
+      "id": "{42d31177-5b0f-4bc2-b530-74a3b8b5b29e}",
+      "update_url": "https://lsdim.github.io/OTRSPost/updates.json"
     }
   }
 }
