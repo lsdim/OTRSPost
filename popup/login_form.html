@@ -7,17 +7,30 @@
   </head>
 
 <body>
-  <div class="login-page">
+
+  <div id="consent-screen" class="consent-container">
+    <h3>Дозвіл на обробку даних</h3>
+    <p class="message">
+      Для роботи розширення OTRSPost необхідно збирати та передавати деякі дані:
+    </p>
+    <ul class="message">
+      <li><b>Дані про тікети з OTRS:</b> Номер, заголовок, та текст заявки для відправки сповіщень.</li>
+      <li><b>Автентифікаційні дані:</b> Ваш логін та пароль для автоматичного входу в OTRS та отримання токену доступу до налаштувань.</li>
+    </ul>
+    <p class="message">
+      Ці дані передаються на сервери Telegram та Firebase. Будь ласка, надайте свою згоду на обробку цих даних.
+      <br>
+      <em>(Вам потрібно буде створити сторінку з політикою конфіденційності та додати посилання сюди)</em>
+      <!-- <a href="YOUR_PRIVACY_POLICY_URL" target="_blank">Політика конфіденційності</a> -->
+    </p>
+    <div class="consent-buttons">
+      <button id="accept-consent">Прийняти та продовжити</button>
+      <button id="reject-consent">Відхилити</button>
+    </div>
+  </div>
+
+  <div class="login-page" style="display: none;">
 	  <div class="form">
-	  <!--
-		<form class="register-form">
-		  <input type="text" placeholder="name"/>
-		  <input type="password" placeholder="password"/>
-		  <input type="text" placeholder="email address"/>
-		  <button>create</button>
-		  <p class="message">Already registered? <a href="#">Sign In</a></p>
-		</form>
-		-->
 		<form ation="" class="login-form" id="loginForm">
 		  <label for="username" class="message">Ім'я користувача</label>
 		  <input id="username" type="text" placeholder="Ім'я користувача"/>
@@ -26,9 +39,6 @@
 		  <label for="timeCheck" class="message">Інтервал перевірки (сек)</label>
 		  <input id="timeCheck" type="text" placeholder="Інтервал в секундах" />
 		  <button type="submit">Зберегти</button>
-		  <!--
-		  <p class="message">Not registered? <a href="#">Create an account</a></p>
-		  -->
 		</form>
 	  </div>
 	</div>

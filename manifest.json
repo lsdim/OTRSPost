@@ -1,9 +1,11 @@
 {
   "manifest_version": 2,
   "name": "OTRSPost",
-  "version": "1.0",
+  "version": "1.1",
 
   "description": "Send new tickets to telegram",
+  "homepage_url": "https://example.com", 
+  "privacy_policy": "popup/policy.html",
 
   "icons": {
     "48": "icons/otrs-48.png"
@@ -31,5 +33,12 @@
     },
     "default_title": "OTRS bot",
     "default_popup": "popup/login_form.html"
+  },
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "otrspost@your-domain.com",
+      "update_url": "https://your-server.com/updates.json"
+    }
   }
 }

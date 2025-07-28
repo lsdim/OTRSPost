@@ -1,113 +1,99 @@
-﻿
-const loginForm = document.getElementById('loginForm');
+document.addEventListener('DOMContentLoaded', function () {
+    const consentScreen = document.getElementById('consent-screen');
+    const loginPage = document.querySelector('.login-page'); // Use querySelector for class
+    const acceptButton = document.getElementById('accept-consent');
+    const rejectButton = document.getElementById('reject-consent');
 
-const username = document.getElementById("username");
-const password = document.getElementById("password");
-const timeCheck = document.getElementById("timeCheck");
+    // Check for consent on load
+    browser.storage.local.get('consentGiven').then(result => {
+        if (result.consentGiven === true) {
+            showLoginPage();
+        } else {
+            showConsentScreen();
+        }
+    });
 
-let user = {};
+    acceptButton.addEventListener('click', () => {
+        browser.storage.local.set({ consentGiven: true }).then(() => {
+            showLoginPage();
+            // Reload the content script to start its work
+            browser.tabs.query({ active: true, currentWindow: true }).then(tabs => {
+                if (tabs[0] && tabs[0].id) {
+                    browser.tabs.reload(tabs[0].id);
+                }
+            });
+        });
+    });
 
+    rejectButton.addEventListener('click', () => {
+        // User rejected, you can close the popup or show a message
+        window.close();
+    });
 
-getData('timeCheck').then(value => {
-  if (value) {
-    timeCheck.value = value;
-  }
+    function showConsentScreen() {
+        consentScreen.style.display = 'block';
+        if(loginPage) loginPage.style.display = 'none';
+    }
+
+    function showLoginPage() {
+        consentScreen.style.display = 'none';
+        if(loginPage) loginPage.style.display = 'block';
+        initializeLoginForm();
+    }
 });
 
-//   getData('password').then(value => {
-//     if (value) {
-//       password.value = value;
-//     }
-//   });
-// });
+function initializeLoginForm() {
+    const loginForm = document.getElementById('loginForm');
+    const username = document.getElementById("username");
+    const password = document.getElementById("password");
+    const timeCheck = document.getElementById("timeCheck");
 
-getData('user').then(value => {
-  if (value) {
-    user = { ...value };
-    username.value = user.username;
-    password.value = user.password;
-  }
-});
+    if (!loginForm) return; // Exit if the form is not there
 
+    let user = {};
 
+    getData('timeCheck').then(value => {
+        if (value) {
+            timeCheck.value = value;
+        }
+    });
 
+    getData('user').then(value => {
+        if (value) {
+            user = { ...value };
+            username.value = user.username;
+            password.value = user.password;
+        }
+    });
 
-loginForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-
-
-
-  if (username.value == "" || password.value == "") {
-    alert("Заповніть обидва поля!");
-  } else {
-
-    //changeIcon();
-    user.username = username.value;
-    user.password = password.value;
-    setData('user', user);
-    setData('timeCheck', timeCheck.value);
-    alert("Збережено!");
-
-  }
-
-  console.log('submit');
-
-  // handle submit
-});
-
-/*
-browser.pageAction.onClicked.addListener((tab) => {
-  console.log('pageAction');
-  browser.pageAction.setIcon({
-    tabId: tab.id,
-    path: {
-    19: "icons/otrs-19.png",
-    38: "icons/otrs-38.png"
-  },
-  });
-});
-
-async function changeIcon() {
-  let settingIcon = await browser.pageAction.setIcon({
-  path: {
-    19: "icons/otrs-19.png",
-  38: "icons/otrs-38.png"
-  },
-});
-
-};
-
-*/
-
-// async function setData(username, password) {
-//   try {
-//     await browser.storage.local.set({ 'username': username, 'password': password });
-//   } catch (error) {
-//     console.error('Error setting tickets to storage:', error);
-//   }
-//   console.log('set');
-// }
+    loginForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        if (username.value == "" || password.value == "") {
+            alert("Заповніть обидва поля!");
+        } else {
+            user.username = username.value;
+            user.password = password.value;
+            setData('user', user);
+            setData('timeCheck', timeCheck.value);
+            alert("Збережено!");
+        }
+    });
+}
 
 async function setData(key, value) {
-  try {
-    await browser.storage.local.set({ [key]: value });
-  } catch (error) {
-    console.error('Error setting tickets to storage:', error);
-  }
-  console.log('set');
+    try {
+        await browser.storage.local.set({ [key]: value });
+    } catch (error) {
+        console.error('Error setting data to storage:', error);
+    }
 }
 
 async function getData(key) {
-  const gettingItem = await browser.storage.local.get(key);
-  // console.log('gettingItem', gettingItem[key]);
-  return gettingItem[key];
-
+    try {
+        const gettingItem = await browser.storage.local.get(key);
+        return gettingItem[key];
+    } catch (error) {
+        console.error('Error getting data from storage:', error);
+        return null;
+    }
 }
-
-// function setItem() {
-//   console.log("OK");
-// }
-
-// function onError(error) {
-//   console.log(error);
-// }
