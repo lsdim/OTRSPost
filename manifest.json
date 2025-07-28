@@ -4,8 +4,7 @@
   "version": "1.1",
 
   "description": "Send new tickets to telegram",
-  "homepage_url": "https://example.com", 
-  "privacy_policy": "popup/policy.html",
+  "homepage_url": "https://github.com/lsdim/OTRSPost", 
 
   "icons": {
     "48": "icons/otrs-48.png"
@@ -37,7 +36,7 @@
 
   "browser_specific_settings": {
     "gecko": {
-      "id": "otrspost@your-domain.com",
+      "id": "otrspost@ukrposhta.ua",
       "update_url": "https://your-server.com/updates.json"
     }
   }
