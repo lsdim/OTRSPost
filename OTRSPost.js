@@ -133,6 +133,7 @@ function main() {
             console.error('Error getting tickets from storage:', error);
         }
 
+        const MAX_TICKETS_TO_STORE = 2000;
         let sendMessageResult = false;
 
         if (rows.length > 0) {
@@ -140,7 +141,13 @@ function main() {
                 const ticketNumber = getInnerText(rows[i], idList.ticketNumId);
                 const ticketState = getInnerText(rows[i], idList.stateId);
                 if (!tickets.includes(ticketNumber) && ticketState === 'Призначена') {
+                    
+                    // FIFO queue logic to prevent storage overflow
+                    if (tickets.length >= MAX_TICKETS_TO_STORE) {
+                        tickets.shift(); // Remove the oldest ticket
+                    }
                     tickets.push(ticketNumber);
+
                     const ticketURL = getTicketURL(rows[i], idList.ticketNumId);
                     const ticketText = await getTicketText(ticketURL);
 
