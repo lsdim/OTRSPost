@@ -5,8 +5,8 @@ browser.runtime.onInstalled.addListener(async (details) => {
     if (reason === 'install') {
         browser.tabs.create({ url: 'popup/policy.html' });
     } else if (reason === 'update') {
-        const { agreed, version: storedVersion } = await browser.storage.local.get(['accept-consent', 'version']);
-        if (!agreed || storedVersion !== version) {
+        const { consentGiven, version: storedVersion } = await browser.storage.local.get(['consentGiven', 'version']);
+        if (!consentGiven || storedVersion !== version) {
             browser.tabs.create({ url: 'popup/policy.html' });
         }
     }
