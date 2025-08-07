@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "OTRSPost",
-  "version": "1.1",
+  "version": "1.3",
 
   "description": "Send new tickets to telegram",
   "homepage_url": "https://github.com/lsdim/OTRSPost", 
@@ -19,6 +19,7 @@
 
   "permissions": [
     "storage",
+    "management",
     "*://api.telegram.org/*",
     "*://identitytoolkit.googleapis.com/*",
     "*://otrs-patterns-default-rtdb.europe-west1.firebasedatabase.app/*"
