@@ -1,0 +1,43 @@
+.custom-alert {
+  position: fixed;
+  top: 50%;
+  right: 50%;
+  padding: 15px 30px 15px 15px;   
+  color: white;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 10000; 
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  opacity: 0.9;
+  transition: opacity 0.5s ease-out;
+}
+
+.warning-alert {
+	background-color: rgb(255, 199, 0);
+	color: black;
+}
+
+.saccess-alert {
+	background-color: #4CAF50;
+}
+
+.error-alert {
+	background-color: rgb(236, 144, 115);
+}
+
+
+
+.custom-alert-close {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.custom-alert-close:hover {
+  color: #f1f1f1;
+}

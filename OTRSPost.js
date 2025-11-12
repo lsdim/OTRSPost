@@ -36,7 +36,9 @@ function main() {
             getBotInfo(); // Now we can get bot info
         } else {
             console.error('Firebase API Key is not set in the extension options.');
-            alert('OTRS Bot - Не вказано Firebase API Key в налаштуваннях розширення!');
+			setTimeout(() => {
+				showCustomAlert('OTRS Bot - Не вказано Firebase API Key в налаштуваннях розширення!', 'warning');
+			}, 5000);            
         }
     });
 
@@ -309,8 +311,15 @@ function main() {
         if (articleBody.length > 0) {
             const textMessage = articleBody[0].innerText.split('********************************************************************************')[0]
                 .split('***');
-            const mess = 'Текст заявки: \t\n<blockquote>' + escapeHTML(textMessage[0].trim()) + '</blockquote>'
+				//console.log('textMessage',textMessage);
+			let mess = '';
+			if (textMessage.length>1) {
+				mess = 'Текст заявки: \t\n<blockquote>' + escapeHTML(textMessage[0].trim()) + '</blockquote>'
                 + '\n 📧<b>' + escapeHTML(textMessage[1].split('\n')[1].trim()) + '</b>';
+			}	else {
+				mess = 'Текст заявки: \t\n<blockquote>' + textMessage[0] + '</blockquote>';
+			}
+            
             return mess;
         } else if (messageBrowser.length > 0) {
             const ifr = articleBodyHtml.getElementsByClassName('ArticleMailContentHTMLWrapper');
@@ -488,7 +497,9 @@ function main() {
         try {
             const token = await getToken();
             if (!token.idToken) {
-                alert('OTRS Bot - Не вдалося отримати дані. Перевірте логін і пароль.');
+				setTimeout(() => {
+					showCustomAlert('OTRS Bot - Не вдалося отримати дані. Перевірте логін і пароль.', 'error');
+				}, 5000);                
                 return;
             }
             url = url + `?auth=${token.idToken}`;
@@ -537,7 +548,9 @@ function main() {
         });
 
         if (!user.username || !user.password) {
-            alert('OTRS Bot - Не вказано логін або пароль');
+			setTimeout(() => {
+				showCustomAlert('OTRS Bot - Не вказано логін або пароль', 'error');
+			}, 5000);
             return {};
         }
 
@@ -599,4 +612,38 @@ function main() {
         }
 
     }
+	
+	function showCustomAlert(messageText, messageType) {
+	  const alertContainer = document.createElement('div');
+	  alertContainer.classList.add('custom-alert');
+	  alertContainer.textContent = messageText;
+	  switch(messageType){
+		  case 'warning': alertContainer.classList.add('warning-alert');
+			break;
+		  case 'error': alertContainer.classList.add('error-alert');
+			break;
+		  case 'saccess': alertContainer.classList.add('saccess-alert');
+			break;
+		default: alertContainer.classList.add('warning-alert');
+	  }
+	  
+	  const closeButton = document.createElement('span');
+	  closeButton.classList.add('custom-alert-close');
+	  closeButton.textContent = '×';
+	  closeButton.onclick = function() {
+		alertContainer.remove();
+	  };
+
+	  alertContainer.appendChild(closeButton);
+	  document.body.appendChild(alertContainer); 
+
+	 
+	  setTimeout(() => {
+		if (alertContainer.parentNode) {
+		  alertContainer.remove();
+		}
+	  }, 5000);
+	}
+	
+	
 }
