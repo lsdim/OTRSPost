@@ -51,7 +51,7 @@ function main() {
                 console.error('Failed to load bot info');
             }
         }).catch(error => {
-            console.error('Error fetching bot info:', error);
+            console.error('Error get bot info:', error);
         });
     }
 
@@ -483,6 +483,9 @@ function main() {
             })
             .catch(error => {
                 console.error('Error sending message:', error);
+				setTimeout(() => {
+					showCustomAlert('Помилка відправки повідомлення: '+ error, 'error');
+				}, 3000);
                 return false;
             });
         return true;
