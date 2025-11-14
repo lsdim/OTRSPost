@@ -21,9 +21,12 @@
   "permissions": [
     "storage",
     "management",
+	"webRequest",
+    "webRequestBlocking",
     "*://api.telegram.org/*",
     "*://identitytoolkit.googleapis.com/*",
-    "*://otrs-patterns-default-rtdb.europe-west1.firebasedatabase.app/*"
+    "*://otrs-patterns-default-rtdb.europe-west1.firebasedatabase.app/*",
+	"*://*.help.ukrposhta.loc/otrs/index.pl*"
   ],
 
   "page_action": {
