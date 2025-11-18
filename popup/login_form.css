@@ -16,7 +16,7 @@
 
 .login-page {
     width: 360px;
-    padding: 8% 0 0;
+    padding: 8% 20px 0 20px;
     margin: auto;
 }
 
@@ -25,7 +25,7 @@
     z-index: 1;
     background: #FFFFFF;
     max-width: 360px;
-    margin: 0 auto 100px;
+    margin: 0 auto 8%;
     padding: 45px;
     text-align: center;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
@@ -71,4 +71,88 @@
 .form .message a {
     color: #4CAF50;
     text-decoration: none;
+}
+
+/* Загальний стиль для меню */
+.menu {
+  display: flex; /* Розташування елементів горизонтально */
+  justify-content: center; /* Вирівнювання посилань по центру */
+  background-color: #333; /* Тло меню */
+  font-family: "Roboto", sans-serif; 
+  padding: 2px 0; /* Відступи зверху та знизу */
+  max-width: 100%;
+  /*width: 500px*/
+  margin: 0 auto 0px;
+}
+
+/* Стиль для посилань */
+.menu a {
+  text-decoration: none; /* Забираємо підкреслення */
+  color: white; /* Колір тексту */
+  padding: 5px 10px; /* Відступи всередині кнопок */
+  font-size: 16px; /* Розмір тексту */
+  font-weight: bold; /* Жирний текст */
+  /*border-radius: 5px; /* Згладжені кути */
+  transition: background-color 0.3s, color 0.3s; /* Плавний перехід кольорів */
+}
+
+/* Стиль при наведенні */
+.menu a:hover {
+  background-color: #575757; /* Зміна кольору тла при наведенні */
+  color: #ffd700; /* Золотистий текст при наведенні */
+}
+
+/* Стиль для активного посилання */
+.menu a.active {
+  background-color: #ffd700; /* Золотистий фон для активного */
+  color: #333; /* Темний текст */
+}
+
+body {  
+  font-family: "Roboto", sans-serif;  
+}
+
+.custom-alert {
+  position: fixed;
+  top: 50%;
+  /*align: center;*/
+  /*right: 50%;*/
+  padding: 15px 30px 15px 15px;   
+  color: white;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 10000; 
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  opacity: 0.9;
+  transition: opacity 0.5s ease-out;
+}
+
+.warning-alert {
+	background-color: rgb(255, 199, 0);
+	color: black;
+}
+
+.saccess-alert {
+	background-color: #4CAF50;
+}
+
+.error-alert {
+	background-color: rgb(236, 144, 115);
+}
+
+
+
+.custom-alert-close {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.custom-alert-close:hover {
+  color: #f1f1f1;
 }

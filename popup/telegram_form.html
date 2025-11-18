@@ -8,6 +8,7 @@
 
 <body>
 
+  <!--
   <div id="consent-screen" class="consent-container">
     <h3>Дозвіл на обробку даних</h3>
     <p class="message">
@@ -27,28 +28,24 @@
       <button id="reject-consent">Відхилити</button>
     </div>
   </div>
+  -->
 
-  <div class="login-page" style="display: none;">
+  <div class="login-page">
 	  <nav class="menu">
 		<a href="./login_form.html">Логін</a>
 		<a href="./telegram_form.html">Телеграм</a>
 	  </nav>
-  
 	  <div class="form">
-		<form ation="" class="login-form" id="loginForm">
-		  <label for="username" class="message">Ім'я користувача</label>
-		  <input id="username" type="text" placeholder="Ім'я користувача"/>
-		  <label for="password" class="message">Пароль</label>
-		  <input id="password" type="password" placeholder="Пароль"/>
-		  <label for="apiKey" class="message">Firebase API Key</label>
-		  <input id="apiKey" type="password" placeholder="Firebase API Key"/>
-		  <label for="timeCheck" class="message">Інтервал перевірки (сек)</label>
-		  <input id="timeCheck" type="text" placeholder="Інтервал в секундах" />
+		<form ation="" class="login-form" id="telegramForm">
+		  <label for="botToken" class="message">Telegram bot TOKEN</label>
+		  <input id="botToken" type="password" placeholder="Telegram bot TOKEN"/>
+		  <label for="chatId" class="message">ID чату</label>
+		  <input id="chatId" type="text" placeholder="ID чату"/>
 		  <button type="submit">Зберегти</button>
 		</form>
 	  </div>
 	</div>
-  <script src="login_form.js"></script>
+  <script src="telegram_form.js"></script>
 </body>
 
 </html>

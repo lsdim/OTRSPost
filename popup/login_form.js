@@ -1,3 +1,10 @@
+document.querySelectorAll('.menu a').forEach(link => {
+    if (link.href === window.location.href) {
+        link.classList.add('active');
+    }
+});
+
+
 document.addEventListener('DOMContentLoaded', function () {
     const consentScreen = document.getElementById('consent-screen');
     const loginPage = document.querySelector('.login-page');

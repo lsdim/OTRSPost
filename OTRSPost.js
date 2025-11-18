@@ -31,14 +31,25 @@ function main() {
     getData('apiKey').then(key => {
         if (key) {
             apiKey = key;
-            DBUrl = 'https://otrs-patterns-default-rtdb.europe-west1.firebasedatabase.app/info/TelegramBot.json';
-            AuthUrl = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`;
-            getBotInfo(); // Now we can get bot info
+			
+			let user = {};
+			getData('user').then(value => {
+				if (value) {
+					user = { ...value };
+				}
+				
+				if (user.username) {
+					DBUrl = `https://otrs-patterns-default-rtdb.europe-west1.firebasedatabase.app/info/${user.username}/TelegramBot.json`;
+					AuthUrl = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`;
+					getBotInfo(); // Now we can get bot info
+				} else {
+					showCustomAlert('OTRS Bot - Не вказано логін або пароль', 'error');
+				}	
+			});	
+            
         } else {
             console.error('Firebase API Key is not set in the extension options.');
-			setTimeout(() => {
-				showCustomAlert('OTRS Bot - Не вказано Firebase API Key в налаштуваннях розширення!', 'warning');
-			}, 5000);            
+			showCustomAlert('OTRS Bot - Не вказано Firebase API Key в налаштуваннях розширення!', 'error');          
         }
     });
 
@@ -483,9 +494,7 @@ function main() {
             })
             .catch(error => {
                 console.error('Error sending message:', error);
-				setTimeout(() => {
-					showCustomAlert('Помилка відправки повідомлення: '+ error, 'error');
-				}, 3000);
+				showCustomAlert('Помилка відправки повідомлення: '+ error, 'error');
                 return false;
             });
         return true;
@@ -500,9 +509,7 @@ function main() {
         try {
             const token = await getToken();
             if (!token.idToken) {
-				setTimeout(() => {
-					showCustomAlert('OTRS Bot - Не вдалося отримати дані. Перевірте логін і пароль.', 'error');
-				}, 5000);                
+				showCustomAlert('OTRS Bot - Не вдалося отримати дані. Перевірте логін і пароль.', 'error');                
                 return;
             }
             url = url + `?auth=${token.idToken}`;
@@ -551,9 +558,7 @@ function main() {
         });
 
         if (!user.username || !user.password) {
-			setTimeout(() => {
-				showCustomAlert('OTRS Bot - Не вказано логін або пароль', 'error');
-			}, 5000);
+			showCustomAlert('OTRS Bot - Не вказано логін або пароль', 'error');
             return {};
         }
 
