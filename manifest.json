@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "OTRSPost",
-  "version": "1.3",
+  "version": "1.4",
 
   "description": "Send new tickets to telegram",
   "homepage_url": "https://github.com/lsdim/OTRSPost", 
@@ -22,7 +22,6 @@
     "storage",
     "management",
 	"webRequest",
-    "webRequestBlocking",
     "*://api.telegram.org/*",
     "*://identitytoolkit.googleapis.com/*",
     "*://otrs-patterns-default-rtdb.europe-west1.firebasedatabase.app/*",
@@ -46,7 +45,14 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "{42d31177-5b0f-4bc2-b530-74a3b8b5b29e}",
-      "update_url": "https://lsdim.github.io/OTRSPost/updates.json"
+      "update_url": "https://lsdim.github.io/OTRSPost/updates.json",
+	  "data_collection_permissions": {
+        "required": [
+          "authenticationInfo",
+          "websiteContent",
+          "websiteActivity"
+        ]
+      }
     }
   }
 }
