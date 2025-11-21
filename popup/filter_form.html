@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/popup/login_form.css"/>
+  </head>
+
+<body>
+
+
+  <div class="login-page">
+	  <nav class="menu">
+		<a href="./login_form.html">Логін</a>
+		<a href="./telegram_form.html">Телеграм</a>
+		<a href="./filter_form.html">Фільтр</a>
+	  </nav>
+	  <div class="form">
+		<form ation="" class="login-form" id="filterForm">
+		  <label for="filterStr" class="message">Вкажіть слова для фільтрації через кому</label>
+		  <input id="filterStr" type="text" placeholder="Вкажіть слова для фільтрації"/>
+		  <!--<button>Додати</button>
+		  
+		  <label for="chatId" class="message">ID чату</label>
+		  <input id="chatId" type="text" placeholder="ID чату"/> -->
+		  <button type="submit">Додати</button>
+		</form>
+		
+		<table id="filtersTable">
+		  <tbody>
+		  </tbody>		  
+		</table>
+		
+	  </div>
+	</div>
+  <script src="filter_form.js"></script>
+</body>
+
+</html>
+
+
+
+

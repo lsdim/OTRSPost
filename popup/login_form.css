@@ -26,7 +26,7 @@
     background: #FFFFFF;
     max-width: 360px;
     margin: 0 auto 8%;
-    padding: 45px;
+    padding: 20px;
     text-align: center;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
 }
@@ -155,4 +155,32 @@ body {
 
 .custom-alert-close:hover {
   color: #f1f1f1;
+}
+
+table,
+td {
+  border: 1px solid #ddd;
+  border-collapse: collapse;
+  font-family: "Roboto", sans-serif;
+  background: #f2f2f2;
+  width: 100%;
+  margin: 10px 0 0 0;
+  padding: 0 8px;
+  font-size: 14px;
+}
+
+button[name="remove"] {
+  margin: 2px 0;
+  padding: 10px;
+  background: #dc3545;
+}
+
+button[name="remove"]:hover,
+button[name="remove"]:active,
+button[name="remove"]:focus {
+  background: #e83e8c;
+}
+
+.button-container {
+  display: flex;
 }
