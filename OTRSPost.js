@@ -18,6 +18,8 @@ function main() {
     let user = {};
     let botInfo = {};
     let lastTime = '0000';
+	
+	let filterStr = '';
 
     getData('lastTime').then(value => {
         lastTime = value ? value : '0000';
@@ -90,6 +92,10 @@ function main() {
         const now = new Date();
         const minute = now.getMinutes();
         const hours = now.getHours();
+		
+		await getData('filterTicket').then(value => {
+                filterStr = value;
+            });
 
         if (checkDialog()) {
             console.log('checkDialog');
@@ -169,32 +175,52 @@ function main() {
                     if (tickets.length >= MAX_TICKETS_TO_STORE) {
                         tickets.shift(); // Remove the oldest ticket
                     }
-                    tickets.push(ticketNumber);
+                    //tickets.push(ticketNumber);
 
                     const ticketURL = getTicketURL(rows[i], idList.ticketNumId);
                     const ticketText = await getTicketText(ticketURL);
-
-                    sendMessageResult = await sendMessage(
-                        `🚨<a href="${ticketURL}">` + columns[idList.ticketNumId] + '</a>🚨' + '\t\n'
-                        + getInnerText(rows[i], idList.ticketNumId) + '\t\n\n'
-                        + columns[idList.createdId] + '\t\n<b>' + getInnerText(rows[i], idList.createdId) + ' (' + getInnerText(rows[i], idList.ageId) + ')</b>\t\n\n'
-                        + columns[idList.ticketTagId] + '\t\n<b>' + getInnerText(rows[i], idList.ticketTagId) + '</b>\t\n\n'
-                        + columns[idList.titleId] + '\t\n<b>' + getInnerText(rows[i], idList.titleId) + '</b>\t\n\n'
-                        + columns[idList.customerNameId] + ' 😭' + '\t\n<b>' + getInnerText(rows[i], idList.customerNameId) + '</b>\t\n\n'
-                        + ticketText
-                    );
+					
+					let filtered = false;
+					
+					if (filterStr) {
+						const filterList = filterStr.split(',');
+						
+						filterList.forEach((item) => {
+							if (ticketText.toUpperCase().indexOf(item.trim().toUpperCase())>-1) {
+								filtered = true;
+							}
+						});						
+					} else {
+						filtered = true;
+					}  
+					
+					if (filtered) {
+						sendMessageResult = await sendMessage(
+							`🚨<a href="${ticketURL}">` + columns[idList.ticketNumId] + '</a>🚨' + '\t\n'
+							+ getInnerText(rows[i], idList.ticketNumId) + '\t\n\n'
+							+ columns[idList.createdId] + '\t\n<b>' + getInnerText(rows[i], idList.createdId) + ' (' + getInnerText(rows[i], idList.ageId) + ')</b>\t\n\n'
+							+ columns[idList.ticketTagId] + '\t\n<b>' + getInnerText(rows[i], idList.ticketTagId) + '</b>\t\n\n'
+							+ columns[idList.titleId] + '\t\n<b>' + getInnerText(rows[i], idList.titleId) + '</b>\t\n\n'
+							+ columns[idList.customerNameId] + ' 😭' + '\t\n<b>' + getInnerText(rows[i], idList.customerNameId) + '</b>\t\n\n'
+							+ ticketText
+						);
+						
+						if (sendMessageResult) {
+							try {
+								tickets.push(ticketNumber);
+								await browser.storage.local.set({ 'tickets': tickets });
+							} catch (error) {
+								console.error('Error setting tickets to storage:', error);
+							}
+						}
+					}
+					
+					
                 }
             }
 
 
-            if (sendMessageResult) {
-                try {
-                    await browser.storage.local.set({ 'tickets': tickets });
-                } catch (error) {
-                    console.error('Error setting tickets to storage:', error);
-                }
-
-            }
+            
 
 
             sendPeriodicMessage(hours, minute, getAnswer(answersOnline), [5]);

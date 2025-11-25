@@ -50,10 +50,12 @@ function initializeLoginForm() {
     const password = document.getElementById("password");
     const apiKey = document.getElementById("apiKey"); // Added apiKey
     const timeCheck = document.getElementById("timeCheck");
+	const filterSrt = document.getElementById("filterSrt");
 
     if (!loginForm) return;
 
     let user = {};
+	let filtersList = [];
 
     getData('timeCheck').then(value => { if (value) { timeCheck.value = value; } });
     getData('apiKey').then(value => { if (value) { apiKey.value = value; } }); // Added apiKey
@@ -65,6 +67,14 @@ function initializeLoginForm() {
             password.value = user.password;
         }
     });
+	
+	getData('filtersList').then(value => {
+		filtersList = value ? [...value] : [];		
+		fillFilterList(filtersList);
+		getData('filterTicket').then(value => {
+			filterSrt.value = value;
+		})
+	});
 
     loginForm.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -76,9 +86,20 @@ function initializeLoginForm() {
             setData('user', user);
             setData('apiKey', apiKey.value); // Added apiKey save
             setData('timeCheck', timeCheck.value);
+			setData('filterTicket', filterSrt.value);
             alert("Збережено!");
         }
     });
+}
+
+function fillFilterList(filterList) {
+	const filterSrt = document.getElementById("filterSrt");
+	for (const filterStr of filterList) {
+		let opt = document.createElement('option');
+		opt.value = filterStr;
+		opt.innerHTML = filterStr;
+		filterSrt.appendChild(opt);
+	}
 }
 
 async function setData(key, value) {
