@@ -102,25 +102,34 @@ async function getBotInfoFromDB(url) {
 
 
 async function getToken() {
+		let token = {};
+		await getData('token').then(value => {
+			token = value ? { ...value } : {};
+		}).catch(error => {
+			console.error("Помилка при отриманні токена з storage:", error);
+		});
 
-        let token = {};
-        await getData('token').then(value => {
-            token = value ? { ...value } : {};
-        });
+		let dateExp = null;
+		let isDateValid = false;
 
-        if (token.expiresIn) {
-            const dateExp = new Date(token.expiresIn);
-            if (new Date() > dateExp) {
-                console.log('Token expired');
-                token = await loginDB();
-            } else {
-            }
-        }
-        else {
-            token = await loginDB();
-        }
+		if (token.expiresIn) {
+			dateExp = new Date(token.expiresIn);		
+			isDateValid = !isNaN(dateExp.getTime());
+		}
 
-        return token;
+		if (isDateValid) {
+			if (new Date() > dateExp) {
+				console.log('Token expired');
+				token = await loginDB();
+			} else {
+				console.log('Token is valid');
+			}
+		} else {
+			console.log('Token date invalid or missing, requesting new token');
+			token = await loginDB();
+		}
+
+		return token;
 }
 
 async function loginDB() {
