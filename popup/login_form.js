@@ -97,7 +97,7 @@ function fillFilterList(filterList) {
 	for (const filterStr of filterList) {
 		let opt = document.createElement('option');
 		opt.value = filterStr;
-		opt.innerHTML = filterStr;
+		opt.textContent = filterStr;
 		filterSrt.appendChild(opt);
 	}
 }
